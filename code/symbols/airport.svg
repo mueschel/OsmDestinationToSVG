@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!--
+        X/Y Verschiebung  Division Multiplikation    Drehen  Spiegeln
+      XXXX.xxxxxYYYY.yyyyyDDDD.dddddMMMM.mmmmm     DDDD.ddddd   Y   X A/E
+   ***************************************************************************
+   Bundesanstalt fuer Strassenwesen
+   RWBA-/RWB-Symbol
+   Bezeichnung:
+   Flughafen
+   Ausdehnung in cm:
+         X_min     X_max     Y_min     Y_max
+         0.00000  15.00000   0.00000  15.00000
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" version="1.1">
+<!--
+   ***************************************************************************
+-->  <path
+     fill="white"
+     fill-rule="evenodd"
+     stroke="black"
+     stroke-width="0.25"
+     d="M150 150L150 0L0 0L0 150L150 150Z"
+     id="path4" />
+<!--
+      * SYMBOL FLUGZEUG *
+-->  <path
+     d="M 90.000000,140.00000 L 102.50000,140.00000 L 77.500000,81.875000 L 120.00000,80.000000 L 132.50000,97.500000 L 140.00000,97.500000 L 135.00000,75.000000 L 140.00000,52.500000 L 132.50000,52.500000 L 120.00000,70.000000 L 77.500000,68.125000 L 102.50000,10.000000 L 90.000000,10.000000 L 47.814238,67.074953 C 40.626931,66.941654 33.438543,66.875000 26.250000,66.875000 L 26.250000,66.875000 C 20.444434,66.875000 15.079870,68.423616 12.177087,70.937500 C 9.2743043,73.451384 9.2743043,76.548616 12.177087,79.062500 C 15.079870,81.576384 20.444434,83.125000 26.250000,83.125000 L 26.250000,83.125000 C 33.438543,83.125000 40.626931,83.058346 47.814238,82.925047 L 90.000000,140.00000 z "
+     id="path6"
+     style="fill:#000000;fill-rule:evenodd;stroke:none" />
+</svg>

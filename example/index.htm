@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <title>OSM Destination Signs</title>
+ <script src="../example/scripts.js" type="text/javascript"></script>
+ <script src="../code/svgclean.js" type="text/javascript"></script>
+ <meta  charset="UTF-8"/>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+  integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+  integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+  crossorigin=""></script>
+ <link rel="stylesheet" type="text/css" href="../example/website.css">
+
+
+
+<!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
+<!-- <script src="https://unpkg.com/osmtogeojson@2.2.12/osmtogeojson.js"></script> -->
+
+<script src="../example/OverPassLayer.js"></script>
+<script src="../example/Permalink.js"></script>
+<script src="../example/MinZoomIndicator.js"></script>
+
+ <base target="_blank">
+</head>
+<body class="mappage">
+<div id="header">
+<h1>Destination Signs</h1>
+<p><strong>This tool shows the content of destination tags on roads.</strong>
+Select one of the marked ways on the map to show the corresponding destination signs.
+<br>The code is available on <a href="https://github.com/mueschel/OsmDestinationSigns">Github</a>.
+<div class="config">
+<h3>Configuration</h3>
+<div><form action="" onsubmit="getsign(document.getElementsByName('nodeid')[0].value); return false;">
+<!--   Style&nbsp;<select name="style"><option value="lanes">Lanes Based<option value="direction">Direction Based</select><br> -->
+  Direction<select name="direction"><option value="0">Both<option value="1">Forward<option value="-1">Backward</select><br>  
+  Country<select name="country"><option value="DE">Germany</select><br> 
+    <br><a id="permanode" href="">Link to this node</a>
+</form>
+</div>
+</div>
+</div>
+<div style="margin-bottom:50px;margin-top:10px;clear:both;width:420px;height:1px;border-bottom:1px solid black;">
+<p><div id="map"></div>
+<div id="container">&nbsp;</div>
+</div>
+
+</body>
+<script type="text/javascript">
+
+function showdata(d) {
+  var data;
+  try {
+    data = JSON.parse(d);
+    
+    document.getElementById('container').innerHTML = "";
+    if (data) {
+      document.getElementById('container').innerHTML = data;
+      }
+//     if(data.html) {  
+//       document.getElementById('container').innerHTML += data.html;
+//       }
+    } 
+  catch (e) {
+    document.getElementById('container').innerHTML = d;
+    }
+  if(cleanup) {cleanup();}
+  }
+
+function loaddata() {
+  var url = '../code/generate.pl';
+  var mydata = this.options.data;
+  mydata.direction = document.getElementsByName("direction")[0].value;
+  mydata.country = document.getElementsByName("country")[0].value;
+//   mydata.style = document.getElementsByName("style")[0].value;
+  mydata = JSON.stringify(mydata);
+  getData(url,'',showdata,mydata);
+  document.getElementById('container').innerHTML = "<h3>Loading...</h3>";
+  return 0;
+}
+
+function WaysWithDestination() {
+
+    var endpoint = "https://overpass.kumi.systems/api/";
+    var options = {
+      endpoint: endpoint,
+      minzoom: 10,
+      query: 'way[highway][~"^destination"~".*"](BBOX);out;>;out skel;',
+      callback: function(data) {
+        var typeDict = { }; 
+        typeDict['node'] = {};
+        typeDict['way'] = {};
+        for(i=0;i<data.elements.length;i++) {
+          var e = data.elements[i];
+          if( e['type']!=="way" && e['type']!=="node" ) {  continue; }
+          typeDict[ e['type'] ][ e['id'] ] = e ;
+          }
+        for(var wayId in typeDict['way'] ) {
+          var way = typeDict['way'][wayId];
+          // build a list of latLng objects
+          var latLngs = [];
+          for( var n in way['nodes'] ) {
+            var nodeId = way['nodes'][n];
+            var node = typeDict['node'][nodeId];
+            latLngs[latLngs.length] = L.latLng( node['lat'], node['lon'] );          
+            }
+          var line = new PolylineId(latLngs, {osmid: wayId, data: way });
+          line.on('click', loaddata);
+          line.addTo(map);
+          }
+        },
+    };
+    var opl = new L.OverPassLayer( options );
+    return opl;
+}
+
+var osmLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'}) ;
+
+ var overpasslayer = WaysWithDestination();
+
+ var map = L.map("map", {
+        center: [50.23066,8.86182],
+        zoom: 14,
+        layers: [ osmLayer, overpasslayer ]
+});
+
+
+map.addControl(new L.Control.Permalink({text: 'Permalink'}));
+</script>
+
+</html>

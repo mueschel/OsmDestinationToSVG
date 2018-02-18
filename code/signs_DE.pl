@@ -1,0 +1,25 @@
+ airport          => "../code/symbols/airport.svg",   
+ bus              => "../code/symbols/bus.png",
+ camp_site        => "../code/symbols/camp_site.svg",
+ centre           => "../code/symbols/centre.png",
+ covered_parking  => "../code/symbols/covered_parking.svg",
+ ferry            => "../code/symbols/ferry.svg",
+ fuel             => "../code/symbols/fuel.svg",  
+ hospital         => "../code/symbols/hospital.svg", 
+ hotel            => "../code/symbols/hotel.svg",
+ industrial       => "../code/symbols/industrial.svg",
+ information      => "../code/symbols/information.svg", 
+ lodging          => "../code/symbols/lodging.svg",
+ motorway         => "../code/symbols/motorway.svg", 
+ park_and_ride    => "../code/symbols/park_and_ride.svg",  
+ parking          => "../code/symbols/parking.svg",  
+ rest_area        => "../code/symbols/parking.svg",   
+ restaurant       => "../code/symbols/restaurant.svg", 
+ stadium          => "../code/symbols/stadium.svg", 
+ toilets          => "../code/symbols/toilets.svg", 
+ train_station    => "../code/symbols/train_station.svg", 
+ viewpoint        => "../code/symbols/viewpoint.svg", 
+
+
+
+

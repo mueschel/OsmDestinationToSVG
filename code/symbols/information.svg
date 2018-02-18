@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!--
+   ***************************************************************************
+   Bundesanstalt fuer Strassenwesen
+   RWBA-/RWB-Symbol
+   Bezeichnung:
+   Informationsstelle
+   Ausdehnung in cm:
+         X_min     X_max     Y_min     Y_max
+         0.00000  15.00000   0.00000  15.00000
+-->
+<svg width="150" height="150" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<!--
+   ***************************************************************************
+-->
+<path fill="white" fill-rule="evenodd" stroke="black" stroke-width="0.25" d="M0 150L0 0L150 0L150 150L0 150Z" />
+<!--
+      SYMBOL INFORMATION
+-->
+<path fill="black" fill-rule="evenodd" stroke="none" d="M42.5 135L107.5 135L107.5 130L97.5 130A5 5 0 0 1 92.5 125L92.5 62.5L47.5 62.5L47.5 67.5L52.5 67.5A5 5 0 0 1 57.5 72.5L57.5 125A5 5 0 0 1 52.5 130L42.5 130L42.5 135Z
+  M92.5 35A17.5 17.5 0 0 0 66.25 19.8445554337723A17.5 17.5 0 0 0 66.25 50.1554445662277A17.5 17.5 0 0 0 92.5 35" />
+<!--
+      UNTERTEIL I
+      I-PUNKT
+-->
+</svg>

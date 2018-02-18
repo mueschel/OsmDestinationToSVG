@@ -1,0 +1,29 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!--
+   ***************************************************************************
+   Bundesanstalt fuer Strassenwesen
+   RWBA-Symbol
+   Bezeichnung:
+   Tankstelle
+   Ausdehnung in cm:
+         X_min     X_max     Y_min     Y_max
+         0.00000  15.00000   0.00000  15.00000
+-->
+<svg width="150" height="150" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<!--
+   ***************************************************************************
+-->
+<path fill="white" fill-rule="evenodd" stroke="black" stroke-width="0.25" d="M0 150L0 0L150 0L150 150L0 150Z" />
+<!--
+      * SYMBOL TANKSAEULE *
+-->
+<path fill="black" fill-rule="evenodd" stroke="none" d="M60 130L110 130L110 122.5L115 122.5L115 25A5 5 0 0 0 110 20L60 20A5 5 0 0 0 55 25L55 30L52.5 30A5 5 0 0 0 47.8846152185393 33.0769234755058L45 40A95 95 0 0 1 33.2473452781834 85.7698536608423L22.4742430993298 105.36424133456A20 20 0 0 0 20 115L20 115A15 15 0 0 0 42.5 127.990381056767A15 15 0 0 0 50 115L50 53.75L55 53.75L55 122.5L60 122.5L60 130Z
+  M45.0000012745784 71.2249861141698A100 100 0 0 1 37.6287845033509 88.1787933272025L26.8556823244974 107.77318100092A15 15 0 0 0 25 115A10 10 0 0 0 40 123.660254037844A10 10 0 0 0 45 115L45 71.225Z
+  M70 62.5L100 62.5A5 5 0 0 0 105 57.5L105 35A5 5 0 0 0 100 30L70 30A5 5 0 0 0 65 35L65 57.5A5 5 0 0 0 70 62.5Z" />
+<!--
+       * SAEULE UND SCHLAUCH AUSSEN *
+       * SCHLAUCH INNEN *
+       * FENSTER *
+-->
+</svg>

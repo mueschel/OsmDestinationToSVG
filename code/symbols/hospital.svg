@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!--
+   ***************************************************************************
+   Bundesanstalt fuer Strassenwesen
+   RWB-Symbol
+   Bezeichnung:
+   Krankenhaus
+   Ausdehnung in cm:
+         X_min     X_max     Y_min     Y_max
+         0.00000  15.00000   0.00000  15.00000
+-->
+<svg width="150" height="150" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<!--
+   ***************************************************************************
+-->
+<path fill="white" fill-rule="evenodd" stroke="black" stroke-width="0.25" d="M0 150L150 150L150 0L0 0L0 150Z" />
+<!--
+      INHALT
+-->
+<path fill="#CC0000" fill-rule="evenodd" stroke="none" d="M60 137L60 107L30 107L30 77L60 77L60 47L90 47L90 77L120 77L120 107L90 107L90 137L60 137Z" />
+<!--
+      ROTES KREUZ
+      DACH
+-->
+<path fill="black" fill-rule="evenodd" stroke="none" d="M5 57L5 37L75 6.99999999999999L145 37L145 57L75 27L5 57Z" />
+</svg>
