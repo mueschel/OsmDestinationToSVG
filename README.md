@@ -1,6 +1,7 @@
 OSM SVG Destination Signs
 =========================
 
+A live instance is available at http://osm.mueschelsoft.de/destinations/example/index.htm
 
 Keys supported so far
 ---------------------
