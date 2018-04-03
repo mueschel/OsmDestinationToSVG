@@ -30,7 +30,7 @@ div#key {
   border:1px solid white;
 }
 
-div.config {
+div.config, div#tags {
   display: block;
   width: 300px;
   float: left;
@@ -39,7 +39,8 @@ div.config {
   margin: 2px; 
   padding:2px;
   z-index:1;
-  
+  word-wrap:break-word;
+
   div {
     width:300px;
     float:left;

@@ -65,6 +65,10 @@ if($t =~ /^[A-Z][A-Z]$/) {
 else {
   $conf->{country} = 'EN'
   };  
+
+if ($dat->{tags}{'oneway'} eq 'yes')   {
+  $conf->{oneway} = 1;
+  }
   
 foreach my $tag (keys %{$dat->{tags}}) {
   if ($tag =~ /^destination/) {
@@ -86,8 +90,10 @@ for (my $sd= 0; $sd < scalar @showdirections; $sd++) {
   splice(@showdirections,$sd,1);
   }
   
+checkSplitLanes();
 calcNumbers();
 duplicateTags();
+# calcNumbers();
 correctDoubleLanes();
 makeArrows();
 
@@ -112,16 +118,29 @@ foreach my $d (@showdirections) {
   my $lane = -1;
   foreach my $l (@{$store->{$d}}) {
     $lane++;
-    next if $conf->{$d}{empty}[$lane];
+    next if $conf->{$d}{empty}[$lane] && !$conf->{$d}->{splitlane}[$lane];
     my $backcol  = getBackground($lane,0,'main');
     my $frontcol = getBackground($lane,0,'main','front');
-    $image .= '<svg x="'.(10+$lanecounter*$SIGNWIDTH).'" y="10" width="'.($SIGNWIDTH+1).'" height="'.$signheight.'px" class="lane DEdefault">'."\n";
-    $image .= '<rect width="100%" height="100%"  class="" style="fill:'.$backcol.';stroke:'.$frontcol.';" />'."\n";
+    if(!$conf->{$d}->{splitlane}[$lane]) {
+      $image .= '<svg x="'.(10+$lanecounter*$SIGNWIDTH).'" y="10" width="'.($SIGNWIDTH+1).'" height="'.$signheight.'px" class="lane DEdefault">'."\n";
+      $image .= '<rect width="100%" height="100%"  class="" style="fill:'.$backcol.';stroke:'.$frontcol.';" />'."\n";
+      }
+    else {
+      $image .= '<svg x="'.(10+$lanecounter*$SIGNWIDTH).'" y="10" width="'.($SIGNWIDTH/4+1).'" height="'.$signheight.'px" class="lane DEdefault">'."\n";
+      $image .= '<rect width="100%" height="100%"  class="" style="fill:'.$backcol.';stroke:'.$frontcol.';" />'."\n";
+      }
     
     if($l->{'turn'}) {
       $image .= getArrow($lane);
       }
-    
+      
+    if($conf->{$d}->{splitlane}[$lane]) {
+      $lanecounter += 0.25;
+      $image .= '</g>';
+      $image .= "</svg>\n";
+      next;
+      }
+      
     my $entrypos = 0;
     my $pos = 10;
       $pos = 40 if $conf->{$d}{arrowpos}[$lane] eq 'left';
@@ -243,17 +262,18 @@ sub duplicateTags {
 #################################################    
 
 
-
+$imgwidth = $lanecounter*$SIGNWIDTH+10;
 $image .= "</svg>\n";
 $image =~ s/%IMAGEWIDTH%/$imgwidth/g;
 $image =~ s/%IMAGEHEIGHT%/$imgheight/g;
 # $image =~ s/%SIGNHEIGHT%/$signheight/g;
 print encode('utf-8',$image);
-#  $error .= Dumper $conf;
-#  $error .= Dumper $store;
-# print '<pre>';
-# print encode('utf-8',$error);
-# print '</pre>';
+
+$error .= Dumper $conf;
+$error .= Dumper $store;
+print '<pre>';
+print encode('utf-8',$error);
+print '</pre>';
 
 
 
@@ -278,25 +298,30 @@ sub getLaneTags {
   
   my $sk = $k;
      $sk =~ s/(:backward|:forward|:lanes)//g;
-  my $direction = 1;
+  my $direction = $conf->{oneway} // 0;
   if ($k =~ /:backward/) {$direction = -1;}
+  if ($k =~ /:forward/) {$direction = 1;}
   
   $v =~ s/none//g;
   $v =~ s/none;//g;
+  $v =~ s/(^|;|\|)\s+/$1/g;
+  $v =~ s/\s+($|;|\|)/$1/g;
   
   if($k =~ /:lanes/) {
     my @lanes = split('\|',$v,-1);
-#     if ($direction == -1) { reverse @lanes;}
     my $i = 0;
     foreach my $l (@lanes) {
       my @tmp = split(';',$l,-1);
-      $store->{$direction}[$i++]{$sk} = \@tmp;
+      $store->{1}[$i++]{$sk} = \@tmp  if $direction >= 0;
+      $store->{-1}[$i++]{$sk} = \@tmp if $direction <= 0;
       }
     }
   else {
     my @tmp = split(';',$v,-1);
-    $store->{$direction}[0]{$sk} = \@tmp;
+    $store->{1}[0]{$sk} = \@tmp    if $direction >= 0 && ! $store->{1}[0]{$sk};
+    $store->{-1}[0]{$sk} = \@tmp   if $direction <= 0 && ! $store->{-1}[0]{$sk};
     }
+#TODO proper priority and overwriting of values  
   }
 
   
@@ -377,7 +402,7 @@ sub correctDoubleLanes {
         $conf->{$d}{filledlanes}--;
         $conf->{0}{filledlanes}--; 
         } 
-      elsif ($lanenum > 0 && Compare($store->{$d}[$lanenum],$store->{$d}[$lanenum-1],{ ignore_hash_keys => [qw(ref int_ref)] })) {
+      elsif ($lanenum > 0 && Compare($store->{$d}[$lanenum],$store->{$d}[$lanenum-1],{ ignore_hash_keys => [qw(ref int_ref highway)] })) {
         $conf->{$d}{empty}[$lanenum] = 1;
         $conf->{$d}{filledlanes}--;
         $conf->{0}{filledlanes}--;
@@ -391,6 +416,45 @@ sub correctDoubleLanes {
     $conf->{$d}->{nothing} = 1 if $conf->{$d}{filledlanes} == 0;
     }   
   }
+
+sub checkSplitLanes {
+  foreach my $d (@showdirections) {
+    for(my $lanenum = 0; $lanenum < scalar (@{$store->{$d}});$lanenum++) {
+      $conf->{$d}->{splitlane}[$lanenum] = 0;
+      next unless($store->{$d}[$lanenum]{'turn'} && scalar @{$store->{$d}[$lanenum]{'turn'}} == 2);
+      my $empty = 1;
+      my @found = (0,0,0);
+      foreach my $k (keys %{$store->{$d}[$lanenum]}) {
+        next if $k eq 'turn';
+        my @tmp = @{$store->{$d}[$lanenum]{$k}};
+        my $i = scalar @tmp;
+        while($i--) {
+          my $j = isFoundInNext($d,$lanenum,$k,$tmp[$i]);
+          $found[$j]++;
+          if ($j) {
+            splice(@{$store->{$d}[$lanenum]{$k}},$i,1);
+            }
+          else {
+            $empty = 0;
+            }
+          }
+        }
+      if($empty) {  
+        $conf->{$d}->{splitlane}[$lanenum] = 1;
+        }
+      elsif($found[1] > 0  && $found[2] == 0) {
+        $conf->{$d}->{splitlane}[$lanenum] = 2;
+        #insertSplitLane($lanenum);
+        }
+      elsif($found[1] == 0  && $found[2] > 0) {
+        $conf->{$d}->{splitlane}[$lanenum] = 3;
+#         insertSplitLane($lanenum+1);
+        }
+      }
+    }
+  }
+    
+  
   
 #################################################
 ## Generate a ref number
@@ -428,18 +492,18 @@ sub makeRef {
 #################################################
 ## Select direction of way to draw
 #################################################    
-sub setDirection {
-  if (defined $q->param('direction') && ($q->param('direction') == 1 || $q->param('direction') == -1) ) {
-    return $q->param('direction');
-    }
-  if( ! defined $store->{1} && defined $store->{-1}) {
-    return -1;
-    }
-#   if(defined $store->{1} && defined $store->{-1} && scalar keys %{$store->{-1}} > scalar keys %{$store->{1}}) {
+# sub setDirection {
+#   if (defined $q->param('direction') && ($q->param('direction') == 1 || $q->param('direction') == -1) ) {
+#     return $q->param('direction');
+#     }
+#   if( ! defined $store->{1} && defined $store->{-1}) {
 #     return -1;
 #     }
-  return 1;
-  }
+# #   if(defined $store->{1} && defined $store->{-1} && scalar keys %{$store->{-1}} > scalar keys %{$store->{1}}) {
+# #     return -1;
+# #     }
+#   return 1;
+#   }
 
   
 #################################################
@@ -471,11 +535,20 @@ sub getArrow {
     }
   elsif ($conf->{$d}{arrowpos}[$lane] eq 'center') {
     $height = 2+$conf->{$d}{maxentries}*20;
-    my $offset = -20*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
-    foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
-      $o .= '<use xlink:href="#arrow" transform="translate('.($SIGNWIDTH/2+$offset).' '.$height.') rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>';
-      $offset += 40;
+    if ($conf->{$d}{splitlane}[$lane]) {
+      my $offset = -8*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
+      foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
+        $o .= '<use xlink:href="#arrow" transform="translate('.($SIGNWIDTH/8+$offset).' '.$height.') rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>';
+        $offset += 16;
+        }
       }
+    else {  
+      my $offset = -20*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
+      foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
+        $o .= '<use xlink:href="#arrow" transform="translate('.($SIGNWIDTH/2+$offset).' '.$height.') rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>';
+        $offset += 40;
+        }
+      }  
     }
 
   return $o;
@@ -683,6 +756,18 @@ my @colors = ('f0f8ff','faebd7','00ffff','7fffd4','f0ffff','f5f5dc','ffe4c4','00
     }
 #   return $col; #leave as is  
   }
+
+
   
+sub isFoundInNext {
+  my ($d,$lane,$key,$val) = @_;
   
+  if($lane>0) {
+    return 1 if grep( /^$val$/, @{$store->{$d}[$lane-1]{$key}});
+    }
+  if($store->{$d}[$lane+1]) {
+    return 2 if grep( /^$val$/, @{$store->{$d}[$lane+1]{$key}});
+    }
+  return 0;
+  }
   

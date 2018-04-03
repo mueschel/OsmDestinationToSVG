@@ -24,7 +24,7 @@ div#key {
   background: #f2f5f7;
   border: 1px solid white; }
 
-div.config {
+div.config, div#tags {
   display: block;
   width: 300px;
   float: left;
@@ -32,6 +32,7 @@ div.config {
   border: 1px solid #aaa;
   margin: 2px;
   padding: 2px;
+  word-wrap:break-word;
   z-index: 1; }
   div.config div {
     width: 300px;

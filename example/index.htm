@@ -41,6 +41,7 @@ Select one of the marked ways on the map to show the corresponding destination s
 </form>
 </div>
 </div>
+<div id="tags"></div>
 </div>
 <div style="margin-bottom:50px;margin-top:10px;clear:both;width:420px;height:1px;border-bottom:1px solid black;">
 <p><div id="map"></div>
@@ -75,15 +76,21 @@ function loaddata() {
   mydata.direction = document.getElementsByName("direction")[0].value;
   mydata.country = document.getElementsByName("country")[0].value;
 //   mydata.style = document.getElementsByName("style")[0].value;
-  mydata = JSON.stringify(mydata);
-  getData(url,'',showdata,mydata);
+  mydatastr = JSON.stringify(mydata);
+  getData(url,'',showdata,mydatastr);
   document.getElementById('container').innerHTML = "<h3>Loading...</h3>";
+  
+  document.getElementById("tags").innerHTML = "<h3>Tags</h3><p><a target=\"_blank\" href=\"https://osm.org/way/"+mydata.id+"\">Way "+mydata.id+"</a></br>";
+  for (var key in mydata.tags) {
+    document.getElementById("tags").innerHTML += "<p>"+key+" = "+mydata.tags[key];
+    }
+          
   return 0;
 }
 
 function WaysWithDestination() {
-
-    var endpoint = "https://overpass.kumi.systems/api/";
+    var endpoint = "http://cerberus.x-matter.uni-frankfurt.de:45680/api/";
+//     var endpoint = "https://overpass.kumi.systems/api/";
     var options = {
       endpoint: endpoint,
       minzoom: 10,
