@@ -65,9 +65,3 @@ function getData(command,dId,callback,data) {
 //   window.open("https://osm.org/"+t+"/"+i);
 // }
 // 
-// function updatelink() {
-//   var node = document.getElementsByName("nodeid")[0].value;
-//   var namedroutes = document.getElementsByName('namedroutes')[0].checked?'&namedroutes':'';
-//   var fromarrow = document.getElementsByName('fromarrow')[0].checked?'&fromarrow':'';
-//   document.getElementById("permanode").href = '#node='+node+namedroutes+fromarrow;
-//   }
