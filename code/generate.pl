@@ -22,6 +22,7 @@ my $out;
 my $store; #processed tags
 my $conf;  #calculated data like number of lanes
 my $image;
+my $topimage;
 my $error = "";
 # $image = "Content-Type: image/svg+xml; charset=utf-8\r\n".
 #          "Access-Control-Allow-Origin: *\r\n\r\n";
@@ -93,7 +94,7 @@ for (my $sd= 0; $sd < scalar @showdirections; $sd++) {
 checkSplitLanes();
 calcNumbers();
 duplicateTags();
-# calcNumbers();
+calcNumbers();
 correctDoubleLanes();
 makeArrows();
 
@@ -118,33 +119,28 @@ foreach my $d (@showdirections) {
   my $lane = -1;
   foreach my $l (@{$store->{$d}}) {
     $lane++;
-    next if $conf->{$d}{empty}[$lane] && !$conf->{$d}->{splitlane}[$lane];
-    my $backcol  = getBackground($lane,0,'main');
+    next if ($conf->{$d}{empty}[$lane] && $conf->{$d}{splitlane}[$lane] == 0);
+    my $backcol  = getBackground($lane,0,'main','back');
     my $frontcol = getBackground($lane,0,'main','front');
-    if(!$conf->{$d}->{splitlane}[$lane]) {
-      $image .= '<svg x="'.(10+$lanecounter*$SIGNWIDTH).'" y="10" width="'.($SIGNWIDTH+1).'" height="'.$signheight.'px" class="lane DEdefault">'."\n";
-      $image .= '<rect width="100%" height="100%"  class="" style="fill:'.$backcol.';stroke:'.$frontcol.';" />'."\n";
+    if($conf->{$d}->{splitlane}[$lane]) {
+      $topimage .= '<svg x="'.(10+$lanecounter*$SIGNWIDTH-$SIGNWIDTH/8).'" y="10" width="'.($SIGNWIDTH/4+1).'" height="'.$signheight.'px" class="lane DEdefault">'."\n";
+      $topimage .= getArrow($lane,'split') if($l->{'turn'});
+      #$image .= '<rect width="100%" height="100%"  class="" style="fill:'.$backcol.';stroke:'.$frontcol.';" />'."\n";
+      $topimage .= '</g>';
+      $topimage .= "</svg>\n";
+      next;
       }
-    else {
-      $image .= '<svg x="'.(10+$lanecounter*$SIGNWIDTH).'" y="10" width="'.($SIGNWIDTH/4+1).'" height="'.$signheight.'px" class="lane DEdefault">'."\n";
-      $image .= '<rect width="100%" height="100%"  class="" style="fill:'.$backcol.';stroke:'.$frontcol.';" />'."\n";
-      }
-    
+
+    $image .= '<svg '.$lane.' x="'.(10+$lanecounter*$SIGNWIDTH).'" y="10" width="'.($SIGNWIDTH+1).'" height="'.$signheight.'px" class="lane DEdefault">'."\n";
+    $image .= '<rect width="100%" height="100%"  class="" style="fill:'.$backcol.';stroke:'.$frontcol.';" />'."\n";
     if($l->{'turn'}) {
       $image .= getArrow($lane);
       }
-      
-    if($conf->{$d}->{splitlane}[$lane]) {
-      $lanecounter += 0.25;
-      $image .= '</g>';
-      $image .= "</svg>\n";
-      next;
-      }
-      
+          
     my $entrypos = 0;
     my $pos = 10;
-      $pos = 40 if $conf->{$d}{arrowpos}[$lane] eq 'left';
-      $pos = 25 if $conf->{$d}{arrowpos}[$lane] eq 'center';
+       $pos = 40 if $conf->{$d}{arrowpos}[$lane] eq 'left';
+       $pos = 25 if $conf->{$d}{arrowpos}[$lane] eq 'center';
     $image .= '<g transform="translate('.$pos.' 20)">';
 
     if($conf->{$d}{numberdestto}[$lane]) {
@@ -233,7 +229,7 @@ foreach my $d (@showdirections) {
   }
 
 #################################################
-## Duplicate none-lane tags if needed
+## Duplicate non-lane tags if needed
 #################################################  
 sub duplicateTags {
   foreach my $d (@showdirections) {
@@ -241,6 +237,7 @@ sub duplicateTags {
     foreach my $t (keys %{$store->{$d}[0]}) {
       next if($store->{$d}[1]{$t});
       for (my $l=1; $l < scalar @{$store->{$d}};$l++) {
+#         $error .= $l.$t."<br>";
         push(@{$store->{$d}[$l]{$t}}, @{$store->{$d}[0]{$t}});
         }
       }
@@ -263,7 +260,7 @@ sub duplicateTags {
 
 
 $imgwidth = $lanecounter*$SIGNWIDTH+10;
-$image .= "</svg>\n";
+$image .= "$topimage</svg>\n";
 $image =~ s/%IMAGEWIDTH%/$imgwidth/g;
 $image =~ s/%IMAGEHEIGHT%/$imgheight/g;
 # $image =~ s/%SIGNHEIGHT%/$signheight/g;
@@ -331,12 +328,14 @@ sub getLaneTags {
 sub calcNumbers {
 #   $conf->{-1}{filledlanes} = 0;
 #   $conf->{1}{filledlanes} = 0;
-
+  $conf->{0}{totallanes}  = 0;
+  $conf->{0}{filledlanes} = 0;
   foreach my $d (@showdirections) {
     my $maxentries = 0;
     my $lanenum = 0;
     foreach my $lane ( @{$store->{$d}}) {
-      my @entries = (0,0,0);
+      $conf->{$d}{numberrefs}[$lanenum] = 0;
+      my @entries = (0,0,0); #normal, :ref, :to
       if (ref($lane) eq 'HASH') {
         foreach my $tag (keys %$lane) {
           my $cnt = scalar @{$lane->{$tag}};
@@ -385,7 +384,7 @@ sub calcNumbers {
         }
       $lanenum++;  
       }
-    $conf->{0}{totallanes} +=   $conf->{$d}{totallanes};
+    $conf->{0}{totallanes}  +=   $conf->{$d}{totallanes};
     $conf->{0}{filledlanes} +=   $conf->{$d}{filledlanes};
     $conf->{0}{maxentries} = max($conf->{$d}{maxentries} , $conf->{0}{maxentries});
     }
@@ -426,29 +425,35 @@ sub checkSplitLanes {
       my @found = (0,0,0);
       foreach my $k (keys %{$store->{$d}[$lanenum]}) {
         next if $k eq 'turn';
+        next if $k eq 'ref';
+        next if $k eq 'int_ref';
         my @tmp = @{$store->{$d}[$lanenum]{$k}};
         my $i = scalar @tmp;
         while($i--) {
           my $j = isFoundInNext($d,$lanenum,$k,$tmp[$i]);
+          $error .= $lanenum.$tmp[$i]." ".$j."\n";
           $found[$j]++;
           if ($j) {
-            splice(@{$store->{$d}[$lanenum]{$k}},$i,1);
+#TODO this should keep icons and colours together with destination 324287020          
+            splice(@{$store->{$d}[$lanenum]{$k}},$i,1);  
             }
           else {
             $empty = 0;
             }
           }
         }
-      if($empty) {  
+      if($empty && ($found[1] > 0 || $found[2] > 0)) {  
         $conf->{$d}->{splitlane}[$lanenum] = 1;
         }
       elsif($found[1] > 0  && $found[2] == 0) {
+        insertSplitLane($lanenum,$d,1);
         $conf->{$d}->{splitlane}[$lanenum] = 2;
-        #insertSplitLane($lanenum);
+        last;
         }
       elsif($found[1] == 0  && $found[2] > 0) {
-        $conf->{$d}->{splitlane}[$lanenum] = 3;
-#         insertSplitLane($lanenum+1);
+        insertSplitLane($lanenum+1,$d,-1);
+        $conf->{$d}->{splitlane}[$lanenum+1] = 3;
+        last;
         }
       }
     }
@@ -522,6 +527,7 @@ sub getArrow {
     }
   
   my $col = getBackground($lane,$entry,'main','front');
+  
   if(defined $type && $type eq 'arrow') {
     #TODO: arrows
     }
@@ -536,10 +542,14 @@ sub getArrow {
   elsif ($conf->{$d}{arrowpos}[$lane] eq 'center') {
     $height = 2+$conf->{$d}{maxentries}*20;
     if ($conf->{$d}{splitlane}[$lane]) {
-      my $offset = -8*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
+      my @col;
+      $col[0] = getBackground($lane-1,$entry,'main','front');
+      $col[1] = getBackground($lane+1,$entry,'main','front');
+      my $i = 0;
+      my $offset = -15*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
       foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
-        $o .= '<use xlink:href="#arrow" transform="translate('.($SIGNWIDTH/8+$offset).' '.$height.') rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>';
-        $offset += 16;
+        $o .= '<use xlink:href="#arrow" transform="translate('.($SIGNWIDTH/8+$offset).' '.$height.') rotate('.$deg.' 0 0)" style="stroke:'.$col[$i++].';"/>';
+        $offset += 30;
         }
       }
     else {  
@@ -634,9 +644,9 @@ sub getBackground {
   my $d = $conf->{direction};
   
   if($type eq 'main') {
-    if ($store->{$d}[$lane]{'destination:colour'} && scalar $store->{$d}[$lane]{'destination:colour'} == 1) {  
+    if ($store->{$d}[$lane]{'destination:colour'} && (scalar @{$store->{$d}[$lane]{'destination:colour'}}) == 1) {  
       $col = $store->{$d}[$lane]{'destination:colour'}[0]  if $part eq 'back';
-      $col = 'black'  if $part eq 'front';
+      $col = bestTextColor($store->{$d}[$lane]{'destination:colour'}[0])  if $part eq 'front';
       }
     else {
       if ($conf->{country} eq 'DE') {
@@ -761,6 +771,8 @@ my @colors = ('f0f8ff','faebd7','00ffff','7fffd4','f0ffff','f5f5dc','ffe4c4','00
   
 sub isFoundInNext {
   my ($d,$lane,$key,$val) = @_;
+  return 3 if $val eq "";
+  return 3 if $val eq "none";
   
   if($lane>0) {
     return 1 if grep( /^$val$/, @{$store->{$d}[$lane-1]{$key}});
@@ -771,3 +783,24 @@ sub isFoundInNext {
   return 0;
   }
   
+sub insertSplitLane {
+  my $pos = shift @_;
+  my $d = shift @_;
+  my $side = shift @_;
+  my $rempos = $pos+$side;
+  splice(@{$store->{$d}},$pos,0,{});
+  foreach my $k (keys %{$store->{$d}[$rempos]}) {
+    if ($k eq 'turn') {
+      $store->{$d}[$pos]{$k} = $store->{$d}[$rempos]{$k};
+      $store->{$d}[$rempos]{$k} = [];
+      }
+    else {
+      $store->{$d}[$pos]{$k} = [];
+      }
+    }
+  foreach my $k (keys %{$conf->{$d}}) {
+    next unless ref($conf->{$d}{$k}) eq 'ARRAY';
+    splice(@{$conf->{$d}{$k}},$pos,0,"");
+    }
+  $conf->{$d}{totallanes}++;  
+  }
