@@ -1,3 +1,5 @@
+var endpoint = "https://overpass.kumi.systems/api/";
+
 function getData(command,dId,callback,data) {
   
   var xmlhttp = null;
@@ -65,3 +67,18 @@ function getData(command,dId,callback,data) {
 //   window.open("https://osm.org/"+t+"/"+i);
 // }
 // 
+
+function getsign(way) {
+  var url = endpoint + "interpreter";
+  var data = "data=[out:json];way("+way+");out center;";
+  getData(url,'',getwaymove,data);
+}
+
+function getwaymove(e) {
+  try {
+    data = JSON.parse(e);
+    map.panTo(new L.LatLng(data.elements[0].center.lat, data.elements[0].center.lon));
+    loaddata_i(data.elements[0]);
+    }
+  catch {};
+  }

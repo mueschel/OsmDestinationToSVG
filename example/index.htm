@@ -33,11 +33,12 @@ Select one of the marked ways on the map to show the corresponding destination s
 <br>The code is available on <a href="https://github.com/mueschel/OsmDestinationSigns">Github</a>.
 <div class="config">
 <h3>Configuration</h3>
-<div><form action="" onsubmit="getsign(document.getElementsByName('nodeid')[0].value); return false;">
+<div><form action="" onsubmit="getsign(document.getElementsByName('wayid')[0].value); return false;">
 <!--   Style&nbsp;<select name="style"><option value="lanes">Lanes Based<option value="direction">Direction Based</select><br> -->
   Direction <select name="direction"><option value="0">Both<option value="1">Forward<option value="-1">Backward</select><br>  
   Country <select name="country"><option value="DE">Germany</select><br> 
   WayId <input type="text" name="wayid"><br>
+  <input type="submit" />
     <br><a id="permanode" href="">Link to this way</a>
 </form>
 </div>
@@ -72,8 +73,11 @@ function showdata(d) {
   }
 
 function loaddata() {
+  loaddata_i(this.options.data);
+}  
+  
+function loaddata_i(mydata) {
   var url = '../code/generate.pl';
-  var mydata = this.options.data;
   console.log(mydata);
   mydata.direction = document.getElementsByName("direction")[0].value;
   mydata.country = document.getElementsByName("country")[0].value;
@@ -91,14 +95,13 @@ function loaddata() {
   var way = document.getElementsByName("wayid")[0].value;
   var direction = document.getElementsByName('direction')[0].value;
   var country = document.getElementsByName('country')[0].value;
-  document.getElementById("permanode").href = '#way='+way+'&direction='+direction+'&country='+country;   
+  document.getElementById("permanode").href = '#wayid='+way+'&direction='+direction+'&country='+country;   
   
   return 0;
 }
 
 function WaysWithDestination() {
-    var endpoint = "http://overpass.mueschelsoft.de:45680/api/";
-//     var endpoint = "https://overpass.kumi.systems/api/";
+
     var options = {
       endpoint: endpoint,
       minzoom: 10,
@@ -151,11 +154,11 @@ var fromarrow = false;
 var way = 0;
 for(i=0; i<hash.length; i++ ){
   var t = hash[i].split('=');
-  if (t[0]=='way')      {        way = t[1];        }
+  if (t[0]=='wayid')      {        way = t[1];        }
   if (t[0]=="direction"){   document.getElementsByName('direction')[0].value = t[1];  }
   if (t[0]=="country")  {   document.getElementsByName('country')[0].value = t[1];    }
   }
-
+console.log(way);
 if(way) {
   getsign(way);
   } 
