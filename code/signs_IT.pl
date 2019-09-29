@@ -19,7 +19,6 @@
  motorway         => "../../destinations/code/symbols/motorway.svg", 
  park_and_ride    => "../../destinations/code/symbols/park_and_ride.svg",  
  parking          => "../../destinations/code/symbols/parking.svg",  
- police           => "../../destinations/code/symbols/police.svg", 
  rest_area        => "../../destinations/code/symbols/parking.svg",   
  restaurant       => "../../destinations/code/symbols/restaurant.svg", 
  stadium          => "../../destinations/code/symbols/stadium.svg", 
