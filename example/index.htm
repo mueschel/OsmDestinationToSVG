@@ -36,7 +36,7 @@ Select one of the marked ways on the map to show the corresponding destination s
 <div><form action="" onsubmit="getsign(document.getElementsByName('wayid')[0].value); return false;">
 <!--   Style&nbsp;<select name="style"><option value="lanes">Lanes Based<option value="direction">Direction Based</select><br> -->
   Direction <select name="direction"><option value="0">Both<option value="1">Forward<option value="-1">Backward</select><br>  
-  Country <select name="country"><option value="DE">Germany</select><br> 
+  Country <select name="country"><option value="DE">Germany<option value="AT">Austria<option value="IT">Italy</select><br> 
   WayId <input type="text" name="wayid"><br>
   <input type="submit" />
     <br><a id="permanode" href="">Link to this way</a>
@@ -87,9 +87,13 @@ function loaddata_i(mydata) {
   document.getElementsByName('wayid')[0].value = mydata.id;
   document.getElementById('container').innerHTML = "<h3>Loading...</h3>";
   
-  document.getElementById("tags").innerHTML = "<h3>Tags</h3><p><a target=\"_blank\" href=\"https://osm.org/way/"+mydata.id+"\">Way "+mydata.id+"</a></br>";
+  document.getElementById("tags").innerHTML = "<h3>Tags</h3><p><a target=\"_blank\" href=\"https://osm.org/way/"+mydata.id+"\">Way "+mydata.id+"</a><br/>";
   for (var key in mydata.tags) {
-    document.getElementById("tags").innerHTML += "<p>"+key+" = "+mydata.tags[key];
+    str = mydata.tags[key];
+    if(str.indexOf('|') != -1) {
+      str = '<br/>&nbsp;'+str.replace(/\|/g,'&nbsp;|<br/>&nbsp;');
+      }
+    document.getElementById("tags").innerHTML += "<p><b>"+key+"</b> = "+str;
     }
     
   var way = document.getElementsByName("wayid")[0].value;

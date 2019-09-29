@@ -49,7 +49,19 @@ viewBox="-1 -1  %IMAGEWIDTH%  %IMAGEHEIGHT%"
       stroke-width: 0;
       fill:black;
       }
-    
+      
+      
+     .sign .lane.ATdefault {
+      fill:white;
+      stroke-width:3px;
+      stroke:blue;
+      rx:1px;
+      }   
+    .sign .lane.ATdefault text {
+      stroke:none;
+      stroke-width: 0;
+      fill:black;
+      }
 
       
     .sign .turnarrow text {
