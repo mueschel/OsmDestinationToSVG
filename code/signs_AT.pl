@@ -1,6 +1,7 @@
  airport          => "../../destinations/code/symbols/airport.svg",   
  bus              => "../../destinations/code/symbols/bus.png",
  camp_site        => "../../destinations/code/symbols/camp_site.svg",
+ castle           => "../../destinations/code/symbols/castle.svg",
  center           => "../../destinations/code/symbols/centre.png",
  centre           => "../../destinations/code/symbols/centre.png",
  church           => "../../destinations/code/symbols/church.png",
