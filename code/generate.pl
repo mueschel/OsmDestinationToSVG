@@ -204,7 +204,7 @@ foreach my $d (@showdirections) {
 
             if($l->{'destination:arrow:to'} && $conf->{$d}{'arrowtag:to'}[$lane] && scalar @{$conf->{$d}{'arrowtag:to'}[$lane]}) {
               $image .= getArrow($lane,'arrowto',$i);
-              $pos += 20;
+              $pos += 25;
               }
 
             $tmp = $l->{'destination:symbol:to'}[$i] if ($l->{'destination:symbol:to'});
@@ -244,7 +244,7 @@ foreach my $d (@showdirections) {
                   $entrypos += 10;
                   }
                 $image .= getArrow($lane,'arrow',$i);
-                $pos += 20;
+                $pos += 25;
                 }
               }
  
@@ -353,8 +353,8 @@ sub drawDivider {
 ## Duplicate non-lane tags if needed
 #################################################  
 sub duplicateTags {
-
   foreach my $d (@showdirections) {
+    
 #Treat all colour identical as if there is just a single one      
     foreach my $l (0..$conf->{$d}{totallanes}-1) {
       foreach my $ta (qw(destination:colour colour:back colour:text)) {
@@ -365,10 +365,9 @@ sub duplicateTags {
           }
         }
       }
-# $error .= Dumper $store->{1}[1]{'destination:arrow'};
+
 #if all arrows are identical, then push to turn      
-    foreach my $l (0..$conf->{$d}{totallanes}-1) {
-#       $error .= $l;
+    foreach my $l (0..$conf->{$d}{totallanes}-1) {        
       if($store->{$d}[$l]{'destination:arrow'}) {
         if (allsameorempty(@{$store->{$d}[$l]{'destination:arrow'}})) {
 #TODO Should show like turn, but only if not in a split plane        
@@ -392,7 +391,7 @@ sub duplicateTags {
       }
       
       
-    return if $conf->{$d}{totallanes} == 1;
+    next if $conf->{$d}{totallanes} == 1;
     foreach my $t (keys %{$store->{$d}[0]}) {
       next if($store->{$d}[1]{$t});
       for (my $l=1; $l < scalar @{$store->{$d}};$l++) {
@@ -457,9 +456,9 @@ print encode('utf-8',$image);
 
 # $error .= Dumper $conf;
 # $error .= Dumper $store;
-print '<pre>';
-print encode('utf-8',$error);
-print '</pre>';
+# print '<pre>';
+# print encode('utf-8',$error);
+# print '</pre>';
 
 
 
@@ -645,7 +644,7 @@ sub checkSplitLanes {
         next if $k eq 'ref';
         next if $k eq 'int_ref';
 
-        next if grep( /^$k$/, qw(destination:colour:to destination:symbol:to destination:ref:to destination:symbol destination:colour destination:arrow));
+        next if grep( /^$k$/, qw(destination:colour:to destination:symbol:to destination:symbol destination:colour destination:arrow));
         my @tmp = @{$store->{$d}[$lanenum]{$k}};
         my $i = scalar @tmp;
         while($i--) {
@@ -665,14 +664,14 @@ sub checkSplitLanes {
                 splice(@{$store->{$d}[$lanenum]{'destination:symbol'}},$i,1);  
                 }      
               }
-            if($k eq 'destination:to') {
+            if($k eq 'destination:to' || ($k eq 'destination:symbol:to' && $store->{$d}[$lanenum]{'destination:to'})==undef) {
               if($store->{$d}[$lanenum]{'destination:colour:to'}) {
                 splice(@{$store->{$d}[$lanenum]{'destination:colour:to'}},$i,1);  
                 }
               if($store->{$d}[$lanenum]{'destination:arrow:to'}) {
                 splice(@{$store->{$d}[$lanenum]{'destination:arrow:to'}},$i,1);  
                 }                
-              if($store->{$d}[$lanenum]{'destination:symbol:to'}) {
+              if($store->{$d}[$lanenum]{'destination:symbol:to'} && $k ne 'destination:symbol:to') {
                 splice(@{$store->{$d}[$lanenum]{'destination:symbol:to'}},$i,1);  
                 }      
               if($store->{$d}[$lanenum]{'destination:ref:to'}) {
@@ -698,6 +697,7 @@ sub checkSplitLanes {
         $conf->{$d}->{splitlane}[$lanenum+1] = 3;
         last;
         }
+      $error .=  Dumper $store;  
       }
     }
   }
@@ -769,15 +769,17 @@ sub getArrow {
     $height = 0;
     my $deg = $conf->{$d}{arrowtag}[$lane][$entry];
     return unless defined $deg;
+    return if ($entry > 0 && $conf->{$d}{'arrowtag'}[$lane][$entry] == $conf->{$d}{'arrowtag'}[$lane][$entry-1]);
     $col = getBackground($lane,$entry,'','front');
-    $o .= '<use xlink:href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(0.7)" style="stroke:'.$col.';"/>';
+    $o .= '<use xlink:href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col.';"/>';
     }
   elsif(defined $type && $type eq 'arrowto') {
     $height = 0;
     my $deg = $conf->{$d}{'arrowtag:to'}[$lane][$entry];
-    $col = getBackground($lane,$entry,':to','front');
     return unless defined $deg;
-    $o .= '<use xlink:href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(0.7)" style="stroke:'.$col.';"/>';
+    return if ($entry > 0 && $conf->{$d}{'arrowtag:to'}[$lane][$entry] == $conf->{$d}{'arrowtag:to'}[$lane][$entry-1]);
+    $col = getBackground($lane,$entry,':to','front');
+    $o .= '<use xlink:href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col.';"/>';
     }  
   elsif ($conf->{$d}{arrowpos}[$lane] eq 'left') {  
     my $deg = $conf->{$d}{arrows}[$lane][0];
