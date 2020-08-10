@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <title>Destination Signs - Tagging Sandbox </title>
+ <script src="scripts.js" type="text/javascript"></script>
+ <script src="../code/svgclean.js" type="text/javascript"></script>
+ <meta  charset="UTF-8"/>
+ <link rel="stylesheet" type="text/css" href="website.css">
+ 
+ <script type="text/javascript">
+  function getSign() {
+    var mydata = new Object;
+    //mydata.direction = document.getElementsByName("direction")[0].value;
+    mydata.country  = document.getElementsByName("country")[0].value;  
+    mydata.tags = new Object;
+    
+    var tagstring = document.getElementsByName("tags")[0].value;
+    var tags = tagstring.split('\n');
+    for(var i = 0; i < tags.length; ++i){
+      var kv = tags[i].split("=");
+      mydata.tags[kv[0].trim()] = kv[1].trim();
+      }
+    console.log(mydata);
+    var url = '../code/generate.pl';
+    mydatastr = JSON.stringify(mydata);
+    getData(url,'',showdata,mydatastr);    
+
+//  var direction = document.getElementsByName('direction')[0].value;
+    var country = document.getElementsByName('country')[0].value;
+    document.getElementById("permalink").href = '#country='+country+'&tags='+tagstring;
+    }
+    
+  function showdata(d) {
+    var data;
+    document.getElementById('image').innerHTML = "";
+    try {
+      data = d;
+      if (data) {
+        document.getElementById('image').innerHTML = data;
+        }
+      if(cleanup) {cleanup();}
+      } 
+    catch (e) {
+      //document.getElementById('image').innerHTML = "Error";
+      }
+    }  
+ </script>
+ 
+</head>
+<body class="mappage">
+<h1>Destination Signs - Tagging Sandbox</h1>
+This page serves as a playground for destination tags. Don't forget the surrounding tags like highway, turn, oneway!
+
+<h2>Enter Tags</h2> 
+<div style="margin-bottom:20px;">
+<form accept-charset="UTF-8">
+<textarea name="tags" cols="100" rows="10" onchange="getSign()">destination:lanes:forward = A City|Not A Town
+destination:ref:lanes:forward = A 3|</textarea><br>
+<!--Direction <select name="direction" onchange="getSign()"><option value="0">Both<option value="1">Forward<option value="-1">Backward</select><br>  -->
+Country <select name="country" onchange="getSign()"><option value="DE">Germany<option value="AT">Austria<option value="FR">France<option value="IT">Italy</select><br> 
+<input type="button" onclick="getSign()" value="Generate">
+</form>
+<p><a href="" id="permalink" target="_blank">Permalink to this sign</a>
+</div>
+
+<div style="border:1px solid black;background:#eee;padding:20px">
+<div id="image"></div>
+</div>
+
+<div>
+
+<h2>Bottom Lines</h2>
+<p>The full code is available at <a href="https://github.com/mueschel/OsmDestinationToSVG">GitHub</a>. Suggestions or bug reports are very welcome.
+<br>All generated images are free to be used in any context ("Public Domain", "gemeinfrei").
+
+</div>
+
+<script type="text/javascript">
+var hash = (location.hash ||'').replace(/^#/,'').split('&');
+for(i=0; i<hash.length; i++ ){
+//   if (t[0]=="direction"){   document.getElementsByName('direction')[0].value = t[1];  }
+  var t = hash[i].split('=');
+  t = [t.shift(), t.join('=')];
+  if (t[0]=="country")  {   document.getElementsByName('country')[0].value = t[1];    }
+  if (t[0]=="tags")  {   document.getElementsByName('tags')[0].value = unescape(t[1]);    }
+  }
+getSign();
+
+</script>
+</body>

@@ -113,7 +113,11 @@ my @bottom  = (0,0,0,0,0,0,0,0,0,0);
 @order    = ('symbol','ref','to','dest') if($conf->{country} eq 'AT');
 @pinline  = ( 1,       0,    0,   0)     if($conf->{country} eq 'AT');
 @bottom   = ( 0,       0,    0,   0)     if($conf->{country} eq 'AT');
-   
+
+@order    = ('ref','to','dest','symbol') if($conf->{country} eq 'FR');
+@pinline  = ( 0,   0,     0,       0)    if($conf->{country} eq 'FR');
+@bottom   = ( 0,   0,     0,       0)    if($conf->{country} eq 'FR');
+
 my $allowstack = 0;  
   
 #################################################
@@ -125,7 +129,6 @@ duplicateTags();
 calcNumbers();
 correctDoubleLanes();
 makeArrows();
-
 
 my %signs = do "./signs_".$conf->{country}.".pl";
 
@@ -605,6 +608,7 @@ sub calcNumbers {
   
 sub correctDoubleLanes {
   foreach my $d (@showdirections) {
+  
     my $lanenum = scalar (@{$store->{$d}}) - 1;
     foreach my $lane ( @{$store->{$d}}) {
       $conf->{$d}{multilanes}[$lanenum] //= 0;
@@ -733,6 +737,14 @@ sub makeRef {
     $text =~ s/\s//g;
     }    
 
+  if($conf->{country} eq 'FR') {
+    if ($text =~ /^\s*[AN][\s\d]+/) { $tcol = 'white'; $bcol = 'red';}
+    if ($text =~ /^\s*[EF][\s\d]+/) { $tcol = 'white'; $bcol = 'green';}
+    if ($text =~ /^\s*[D][\s\d]+/)  { $tcol = 'black'; $bcol = '#f0e060';}
+    if ($text =~ /^\s*[CR][\s\d]+/)  { $tcol = 'black'; $bcol = 'white';}
+    if ($text =~ /^\s*[MTP][\s\d]+/)  { $tcol = '#2568aa'; $bcol = 'white';}
+    }     
+    
   if($tags->{'destination:colour:ref'} && ($tags->{'destination:colour:ref'}[$entry] || scalar $tags->{'destination:colour:ref'} == 1)) {
     $bcol = $tags->{'colour:ref'}[$entry] // $tags->{'destination:colour:ref'}[0];
     $tcol = bestTextColor($bcol);
@@ -829,7 +841,8 @@ sub makeArrows {
       $conf->{$d}{arrows}[$l] = \@deg;
       if ($conf->{$d}{multilanes}[$l]){
         while ($conf->{$d}{multilanes}[$l] >= scalar @deg) {
-          push(@deg,270) ;
+          if ($conf->{country} eq 'FR') {push(@deg,90);}
+          else                          {push(@deg,270);}
           }
         }
       if(scalar @deg > 1) {$multiple = 1;}
@@ -867,16 +880,30 @@ sub makeArrows {
 #################################################   
 sub calcArrows {
   my @deg;
-  foreach my $arrow (@_) {
-    if    ($arrow =~ /sharp_left/)     {push(@deg,135);}
-    elsif ($arrow =~ /^\s*left/)       {push(@deg,180);}
-    elsif ($arrow =~ /slight_left/)    {push(@deg,225);}
-    elsif ($arrow =~ /through/)        {push(@deg,270);}
-    elsif ($arrow =~ /slight_right/)   {push(@deg,-45);}
-    elsif ($arrow =~ /^\s*right/)      {push(@deg,-360);}
-    elsif ($arrow =~ /sharp_right/)    {push(@deg,45);}
-#     else                               {push(@deg,'');}
+    if ($conf->{country} eq 'FR') {
+    foreach my $arrow (@_) {
+      if    ($arrow =~ /sharp_left/)     {push(@deg,180);}
+      elsif ($arrow =~ /(^|;|\s)left/)   {push(@deg,180);}
+      elsif ($arrow =~ /slight_left/)    {push(@deg,135);}
+      elsif ($arrow =~ /through/)        {push(@deg,90);}
+      elsif ($arrow =~ /slight_right/)   {push(@deg,45);}
+      elsif ($arrow =~ /(^|;|\s)right/)  {push(@deg,0);}
+      elsif ($arrow =~ /sharp_right/)    {push(@deg,0);}
+  #     else                               {push(@deg,'');}
+      }
     }
+  else {  
+    foreach my $arrow (@_) {
+      if    ($arrow =~ /sharp_left/)     {push(@deg,135);}
+      elsif ($arrow =~ /(^|;|\s)left/)   {push(@deg,180);}
+      elsif ($arrow =~ /slight_left/)    {push(@deg,225);}
+      elsif ($arrow =~ /through/)        {push(@deg,270);}
+      elsif ($arrow =~ /slight_right/)   {push(@deg,-45);}
+      elsif ($arrow =~ /(^|;|\s)right/)  {push(@deg,-360);}
+      elsif ($arrow =~ /sharp_right/)    {push(@deg,45);}
+  #     else                               {push(@deg,'');}
+      }
+    }  
   return @deg;  
   }
   
@@ -945,6 +972,19 @@ sub getBackground {
           $col = '#2568aa' if $part eq 'front';
           }
         }        
+#Main FR        
+      if ($conf->{country} eq 'FR') {
+        if (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^A/) || 
+            ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^A/) ||
+            ($store->{$d}[0]{'highway'}[0] =~ /^motorway$/)) {
+          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'white'   if $part eq 'front';
+          }
+        else {
+          $col = "white"   if $part eq 'back'; 
+          $col = 'black'   if $part eq 'front';
+          }
+        }
       }
     }
     
@@ -983,6 +1023,14 @@ sub getBackground {
         }
 #Entry AT
       if ($conf->{country} eq 'AT' && $type eq ':to') {
+        if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A/)
+            || ($tags->{'destination:symbol:to'} && $tags->{'destination:symbol:to'}[$i] eq 'motorway')) {
+          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'white'   if $part eq 'front';
+          }
+        }  
+#Entry FR
+      if ($conf->{country} eq 'FR' && $type eq ':to') {
         if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A/)
             || ($tags->{'destination:symbol:to'} && $tags->{'destination:symbol:to'}[$i] eq 'motorway')) {
           $col = "#2568aa" if $part eq 'back'; 
