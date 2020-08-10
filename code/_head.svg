@@ -5,7 +5,7 @@
   height="%IMAGEHEIGHT%px"
   class="sign"
   onload = "cleanup()"
-  xmlns:xlink="http://www.w3.org/1999/xlink" 
+  xmlns="http://www.w3.org/2000/svg" 
 viewBox="-1 -1  %IMAGEWIDTH%  %IMAGEHEIGHT%"
   >
 <!--   onload = "cleanup()" xmlns="http://www.w3.org/2000/svg" 
@@ -81,9 +81,23 @@ viewBox="-1 -1  %IMAGEWIDTH%  %IMAGEHEIGHT%"
       text-anchor: middle;
       }
       
+    .sign text.destinationrefs.PT {      
+      font-size:15px;
+      text-anchor: start;
+      }      
       
     rect.bg {
       stroke-width: 0px;
+      }
+      
+    text.country {
+      font-size:12px;
+      text-anchor: middle;
+
+      }
+      
+    ellipse.country {
+      stroke-width:1px;
       }
 ]]></style>
 

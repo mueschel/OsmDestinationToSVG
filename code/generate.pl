@@ -102,21 +102,25 @@ for (my $sd= 0; $sd < scalar @showdirections; $sd++) {
 #################################################
 ## Define order and style of signs
 #################################################    
-my @order = ('to','dest','symbol','ref');
+my @order = ('to','dest','symbol','ref','country');
 my @pinline = (0,0,0,0,0,0,0,0,0,0);
 my @bottom  = (0,0,0,0,0,0,0,0,0,0);
 
-@order    = ('to','dest','symbol','ref') if($conf->{country} eq 'DE');
-@pinline  = ( 0,   0,     0,       0)    if($conf->{country} eq 'DE');
-@bottom   = ( 0,   0,     0,       1)    if($conf->{country} eq 'DE');
+@order    = ('country','to','dest','symbol','ref') if($conf->{country} eq 'DE');
+@pinline  = ( 0,        0,   0,     0,       0)    if($conf->{country} eq 'DE');
+@bottom   = ( 0,        1,   0,     0,       1)    if($conf->{country} eq 'DE');
 
-@order    = ('symbol','ref','to','dest') if($conf->{country} eq 'AT');
-@pinline  = ( 1,       0,    0,   0)     if($conf->{country} eq 'AT');
-@bottom   = ( 0,       0,    0,   0)     if($conf->{country} eq 'AT');
+@order    = ('country','symbol','ref','to','dest') if($conf->{country} eq 'AT');
+@pinline  = ( 0,        1,       0,    0,   0)     if($conf->{country} eq 'AT');
+@bottom   = ( 0,        0,       0,    1,   0)     if($conf->{country} eq 'AT');
 
-@order    = ('ref','to','dest','symbol') if($conf->{country} eq 'FR');
-@pinline  = ( 0,   0,     0,       0)    if($conf->{country} eq 'FR');
-@bottom   = ( 0,   0,     0,       0)    if($conf->{country} eq 'FR');
+@order    = ('country','symbol','ref','dest','to') if($conf->{country} eq 'PT');
+@pinline  = ( 0,        0,   0,     0,       0)    if($conf->{country} eq 'PT');
+@bottom   = ( 0,        0,   0,     0,       0)    if($conf->{country} eq 'PT');
+
+@order    = ('country','ref','to','dest','symbol') if($conf->{country} eq 'FR');
+@pinline  = ( 0,         0,   0,     0,       0)   if($conf->{country} eq 'FR');
+@bottom   = ( 0,         0,   0,     0,       0)   if($conf->{country} eq 'FR');
 
 my $allowstack = 0;  
   
@@ -164,19 +168,19 @@ foreach my $d (@showdirections) {
     my $backcol  = getBackground($lane,0,'main','back');
     my $frontcol = getBackground($lane,0,'main','front');
     if($conf->{$d}->{splitlane}[$lane]) {
-      $topimage .= '<svg x="'.(10+$lanecounter*$SIGNWIDTH-$SIGNWIDTH/8).'" y="10" width="'.($SIGNWIDTH/4+1).'" height="%SIGNHEIGHT%px" class="lane '.$conf->{country}.'default">'."\n";
+      $topimage .= '<svg x="'.(10+$lanecounter*$SIGNWIDTH-$SIGNWIDTH/8).'" y="10" width="'.($SIGNWIDTH/4+1).'" height="%SIGNHEIGHT%" class="lane '.$conf->{country}.'default">'."\n";
       $topimage .= getArrow($lane,'split') if($l->{'turn'});
       #$image .= '<rect width="100%" height="100%"  class="" style="fill:'.$backcol.';stroke:'.$frontcol.';" />'."\n";
-      $topimage .= '</g>';
+#       $topimage .= '</g>';
       $topimage .= "</svg>\n";
       next;
       }
 
     if ($allowstack && ($conf->{$d}{arrowpos}[$lane] eq 'left' ||$conf->{$d}{arrowpos}[$lane] eq 'right')) {
-      $image .= '<svg '.$lane.' x="10" y="'.$sizes->{currenty}.'" width="'.($SIGNWIDTH+1).'" height="%SIGNHEIGHT%px" class="lane '.$conf->{country}.'default">'."\n";
+      $image .= '<svg  x="10" y="'.$sizes->{currenty}.'" width="'.($SIGNWIDTH+1).'" height="%SIGNHEIGHT%" class="lane '.$conf->{country}.'default">'."\n";
       }
     else {
-      $image .= '<svg '.$lane.' x="'.(10+$lanecounter*$SIGNWIDTH).'" y="10" width="'.($SIGNWIDTH+1).'" height="%SIGNHEIGHT%px" class="lane '.$conf->{country}.'default">'."\n";
+      $image .= '<svg  x="'.(10+$lanecounter*$SIGNWIDTH).'" y="10" width="'.($SIGNWIDTH+1).'" height="%SIGNHEIGHT%" class="lane '.$conf->{country}.'default">'."\n";
       }
     $image .= '<rect width="100%" height="100%"  class="" style="fill:'.$backcol.';stroke:'.$frontcol.';" />'."\n";
     if($l->{'turn'}) {
@@ -202,7 +206,7 @@ foreach my $d (@showdirections) {
         if($conf->{$d}{numberdestto}[$lane]) {
           for(my $i = 0; $i < $conf->{$d}{numberdestto}[$lane];$i++) {
             my $tmp;
-            $image .= '<g transform="translate(0 '.$entrypos.')">';
+            $image .= '<g transform="translate(0 '.$entrypos.')">'."\n";
             $image .= drawBackground($lane,$i,':to',$pos);
 
             if($l->{'destination:arrow:to'} && $conf->{$d}{'arrowtag:to'}[$lane] && scalar @{$conf->{$d}{'arrowtag:to'}[$lane]}) {
@@ -212,7 +216,7 @@ foreach my $d (@showdirections) {
 
             $tmp = $l->{'destination:symbol:to'}[$i] if ($l->{'destination:symbol:to'});
             if ($tmp && $signs{$tmp}) {
-              $image .= '<image xlink:href="'.$signs{$tmp}.'" width="18" height="18" transform="translate('.$pos.' -10)"/>';
+              $image .= '<image href="'.$signs{$tmp}.'" width="18" height="18" transform="translate('.$pos.' -10)"/>'."\n";
               $pos += 18;
               }          
 
@@ -227,7 +231,7 @@ foreach my $d (@showdirections) {
             $entrypos+=20;
             $pos = 0;
             }
-          $image .= drawDivider($entrypos-20,$lane);            
+          $image .= drawDivider($entrypos-20,$lane) if $bottomline;            
           $entrypos += 10;  
           }
         }
@@ -237,7 +241,7 @@ foreach my $d (@showdirections) {
         if($conf->{$d}{numberdest}[$lane]) {  
           for(my $i = 0; $i < $conf->{$d}{numberdest}[$lane];$i++) {
             my $tmp;
-            $image .= '<g transform="translate(0 '.$entrypos.')">';
+            $image .= '<g transform="translate(0 '.$entrypos.')">'."\n";
             $image .= drawBackground($lane,$i,'',$pos);
             
             if($l->{'destination:arrow'} && $conf->{$d}{arrowtag}[$lane] && scalar @{$conf->{$d}{arrowtag}[$lane]}) {
@@ -254,11 +258,20 @@ foreach my $d (@showdirections) {
             if($l->{'destination:symbol'} && $conf->{$d}{numbersymbols}[$lane] == 0) {
               $tmp = $l->{'destination:symbol'}[$i]; 
               if ($tmp && $signs{$tmp}) {
-                $image .= '<image xlink:href="'.$signs{$tmp}.'" width="18" height="18" transform="translate('.$pos.' -10)"/>';
+                $image .= '<image href="'.$signs{$tmp}.'" width="18" height="18" transform="translate('.$pos.' -10)"/>'."\n";
                 $pos += 20;
                 }       
               }
+            if($l->{'destination:country'} && $conf->{$d}{numbercountries}[$lane] == 0) {
+              $tmp = $l->{'destination:country'}[$i]; 
+              if ($tmp) {
+                $image .= '<ellipse class="country" cx="9" cy="0" rx="12" ry="8" style="fill:white;stroke:black;"  transform="translate('.$pos.' 0)"/>'."\n";
+                $image .= '<g transform="translate('.($pos+9).' 0)">'."\n".'<text class="country" datapos="'.$pos.'" style="fill:black">'.$tmp.'</text>'."\n".'</g>'."\n";
 
+                $pos += 22;
+                }       
+              }              
+              
             if ($conf->{$d}{orderedrefs}[$lane]  && $l->{'destination:ref'} && ($tmp = $l->{'destination:ref'}[$i])) {
               $image .= makeRef($pos,0,$tmp,$l,$i);
               $pos += 38;
@@ -281,8 +294,8 @@ foreach my $d (@showdirections) {
           for(my $i = 0; $i < $conf->{$d}{numbersymbols}[$lane];$i++) {
             my $tmp = $l->{'destination:symbol'}[$i] if ($l->{'destination:symbol'}); 
             if ($tmp && $signs{$tmp}) {
-              $image .= '<g transform="translate('.$pos.' '.$entrypos.')">';
-              $image .= '<image xlink:href="'.$signs{$tmp}.'" width="18" height="18" transform="translate(0 -10)"/>';
+              $image .= '<g transform="translate('.$pos.' '.$entrypos.')">'."\n";
+              $image .= '<image href="'.$signs{$tmp}.'" width="18" height="18" transform="translate(0 -10)"/>'."\n";
               $image .= "</g>\n";  
               $pos += 25;
               $newline = 1;
@@ -295,6 +308,27 @@ foreach my $d (@showdirections) {
             }
           }
         }
+#Draw COUNTRY
+      if ($part eq 'country') {    
+        if($conf->{$d}{numbercountries}[$lane]) {
+          for(my $i = 0; $i < $conf->{$d}{numbercountries}[$lane];$i++) {
+            my $tmp = $l->{'destination:country'}[$i] if ($l->{'destination:country'}); 
+            if ($tmp ) {
+              $image .= '<g transform="translate('.$pos.' '.$entrypos.')">'."\n";
+                $image .= '<ellipse class="country" cx="9" cy="0" rx="12" ry="8" style="fill:white;stroke:black;"  transform="translate('.$pos.' 0)"/>'."\n";
+                $image .= '<g transform="translate('.($pos+9).' 0)">'."\n".'<text class="country" datapos="'.$pos.'" style="fill:black">'.$tmp.'</text>'."\n".'</g>'."\n";
+              $image .= "</g>\n";  
+              $pos += 25;
+              $newline = 1;
+              }       
+            }
+          unless ($inline && $pos < 75) {
+            $pos = 0 ;  
+            $entrypos += 20;
+            $newline = 0;
+            }
+          }
+        }        
 #Draw REF        
       if ($part eq 'ref') {  
         if ($conf->{$d}{numberrefs}[$lane] || $conf->{$d}{numberintrefs}[$lane] || $conf->{$d}{numberrefto}[$lane]) {
@@ -334,8 +368,7 @@ foreach my $d (@showdirections) {
         $newline = 0;
         }
       }
-    $image .= '</g>';
-    $image .= "</svg>\n";
+    $image .= "</g>\n</svg>\n";
     $lanecounter++;    
     $sizes->{maxheight} = max($sizes->{maxheight},$entrypos);
     $sizes->{currenty}  += $entrypos+20;
@@ -441,6 +474,7 @@ sub allsameorempty {
 ## Finish image output
 #################################################    
 # $hasarrows *= $hasbottomline;
+$error .= $hasarrows.$hasbottomline;
 $hasbottomline = 0 if $hasarrows;
 my $imgheight  = $sizes->{currenty}+20+$hasarrows*30+$hasbottomline*20;
 my $imgwidth   = $lanecounter*$SIGNWIDTH+10;
@@ -548,7 +582,7 @@ sub calcNumbers {
             $entries[3] = 1;
             $conf->{$d}{numberintrefs}[$lanenum] += $cnt;
             }
-          elsif($tag =~ /^destination/ && ! ($tag =~ /symbol|country/)) {
+          elsif($tag =~ /^destination/ && ! ($tag =~ /symbol|country|ref/)) {
             $entries[0] = $cnt if $entries[0] < $cnt;
             }
           }
@@ -590,11 +624,17 @@ sub calcNumbers {
     #Find number of single symbols
     $lanenum = 0;
     foreach my $lane ( @{$store->{$d}}) {
-      if ($lane->{'destination:symbol'}) {
+      if ($lane->{'destination:symbol'} && scalar @{$lane->{'destination:symbol'}}) {
         if (scalar @{$lane->{'destination:symbol'}} != $conf->{$d}{numberdest}[$lanenum]) {
           $conf->{$d}{entries}[$lanenum] += 1;
           $conf->{$d}{numbersymbols}[$lanenum] = scalar @{$lane->{'destination:symbol'}};
-#           $conf->{$d}{maxentries} = max($conf->{$d}{maxentries},$conf->{$d}{entries}[$lanenum]);
+          }
+        }
+        
+      if ($lane->{'destination:country'} && scalar @{$lane->{'destination:country'}}) {          
+        if (scalar @{$lane->{'destination:country'}} != $conf->{$d}{numberdest}[$lanenum]) {         
+          $conf->{$d}{entries}[$lanenum] += 1;
+          $conf->{$d}{numbercountries}[$lanenum] = scalar @{$lane->{'destination:country'}};
           }
         }
       $lanenum++;  
@@ -713,11 +753,12 @@ sub checkSplitLanes {
 #################################################   
 sub makeRef {
   my ($xpos,$entrypos,$text,$tags,$entry) = @_;
-  $xpos += 17;
+  $xpos += 17 if $conf->{country} ne 'PT';
   my $class = '';
   
   my $tcol = 'black';
   my $bcol = 'white';
+  my $scol = '';
   
   return if $text =~ /^\s*$/;
   if($conf->{country} eq 'DE') {
@@ -737,6 +778,7 @@ sub makeRef {
     $text =~ s/\s//g;
     }    
 
+
   if($conf->{country} eq 'FR') {
     if ($text =~ /^\s*[AN][\s\d]+/) { $tcol = 'white'; $bcol = 'red';}
     if ($text =~ /^\s*[EF][\s\d]+/) { $tcol = 'white'; $bcol = 'green';}
@@ -744,6 +786,16 @@ sub makeRef {
     if ($text =~ /^\s*[CR][\s\d]+/)  { $tcol = 'black'; $bcol = 'white';}
     if ($text =~ /^\s*[MTP][\s\d]+/)  { $tcol = '#2568aa'; $bcol = 'white';}
     }     
+
+  if($conf->{country} eq 'PT') {
+    $tcol = 'black'; $bcol = 'white';
+    if ($text =~ /^\s*A[\s\d]+/) { $tcol = 'white'; $bcol = '#2568aa';}
+    if ($text =~ /^\s*N[\s\d]+/) { $tcol = 'black'; $bcol = 'white';}
+    if ($text =~ /^\s*R[\s\d]+/) { $tcol = 'black'; $bcol = 'white';}
+    $text =~ s/^\s//g;
+    $text =~ s/\s$//g;
+    }      
+
     
   if($tags->{'destination:colour:ref'} && ($tags->{'destination:colour:ref'}[$entry] || scalar $tags->{'destination:colour:ref'} == 1)) {
     $bcol = $tags->{'colour:ref'}[$entry] // $tags->{'destination:colour:ref'}[0];
@@ -751,11 +803,16 @@ sub makeRef {
     }
     
   my $o = "";
-  $o .= '<g  transform="translate('.$xpos.' '.$entrypos.')" class="'.$class.'">';
-  $o .= '<rect class="destinationrefs" x="-15" y="-9" width="30" height="16" rx="2" style="fill:'.$bcol.';stroke:'.$tcol.'"/>';
-  $o .= '<text class="destinationreftext destinationrefs" style="fill:'.$tcol.'">'
+  $o .= '<g  transform="translate('.$xpos.' '.$entrypos.')" class="'.$class.'">'."\n";
+  if($conf->{country} eq 'PT') {
+    $o .= '<rect class="destinationrefs '.$conf->{country}.'" x="0" y="-9" width="30" height="16" rx="2" style="fill:'.$bcol.';stroke:none"/>'."\n";
+    }
+  else {
+    $o .= '<rect class="destinationrefs '.$conf->{country}.'" x="-15" y="-9" width="30" height="16" rx="2" style="fill:'.$bcol.';stroke:'.$tcol.'"/>'."\n";
+    }
+  $o .= '<text datapos="0" class="destinationreftext destinationrefs '.$conf->{country}.'" style="fill:'.$tcol.'">'
             .$text.'</text>'."\n";
-  $o .= '</g>';
+  $o .= '</g>'."\n";
   return $o;
 }
   
@@ -783,7 +840,7 @@ sub getArrow {
     return unless defined $deg;
     return if ($entry > 0 && $conf->{$d}{'arrowtag'}[$lane][$entry] == $conf->{$d}{'arrowtag'}[$lane][$entry-1]);
     $col = getBackground($lane,$entry,'','front');
-    $o .= '<use xlink:href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col.';"/>';
+    $o .= '<use href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col.';"/>'."\n";
     }
   elsif(defined $type && $type eq 'arrowto') {
     $height = 0;
@@ -791,15 +848,16 @@ sub getArrow {
     return unless defined $deg;
     return if ($entry > 0 && $conf->{$d}{'arrowtag:to'}[$lane][$entry] == $conf->{$d}{'arrowtag:to'}[$lane][$entry-1]);
     $col = getBackground($lane,$entry,':to','front');
-    $o .= '<use xlink:href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col.';"/>';
+
+    $o .= '<use href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col.';"/>'."\n";
     }  
   elsif ($conf->{$d}{arrowpos}[$lane] eq 'left') {  
     my $deg = $conf->{$d}{arrows}[$lane][0];
-    $o .= '<use xlink:href="#arrow" transform="translate(20 '.$height.') rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>';
+    $o .= '<use href="#arrow" transform="translate(20 '.$height.') rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>'."\n";
     }
   elsif ($conf->{$d}{arrowpos}[$lane] eq 'right') {
     my $deg = $conf->{$d}{arrows}[$lane][0];
-    $o .= '<use xlink:href="#arrow" transform="translate('.($SIGNWIDTH-20).' '.$height.') rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>';    
+    $o .= '<use href="#arrow" transform="translate('.($SIGNWIDTH-20).' '.$height.') rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>'."\n";    
     }
   elsif ($conf->{$d}{arrowpos}[$lane] eq 'center') {
 #     $height = 2+$conf->{$d}{maxentries}*20;
@@ -810,14 +868,14 @@ sub getArrow {
       my $i = 0;
       my $offset = -15*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
       foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
-        $o .= '<use xlink:href="#arrow" transform="translate('.($SIGNWIDTH/8+$offset).' %ARROWPOS%) rotate('.$deg.' 0 0)" style="stroke:'.$col[$i++].';"/>';
+        $o .= '<use href="#arrow" transform="translate('.($SIGNWIDTH/8+$offset).' %ARROWPOS%) rotate('.$deg.' 0 0)" style="stroke:'.$col[$i++].';"/>'."\n";
         $offset += 30;
         }
       }
     else {  
       my $offset = -20*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
       foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
-        $o .= '<use xlink:href="#arrow" transform="translate('.($SIGNWIDTH/2+$offset).' %ARROWPOS%) rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>';
+        $o .= '<use href="#arrow" transform="translate('.($SIGNWIDTH/2+$offset).' %ARROWPOS%) rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>'."\n";
         $offset += 40;
         }
       }  
@@ -880,7 +938,8 @@ sub makeArrows {
 #################################################   
 sub calcArrows {
   my @deg;
-    if ($conf->{country} eq 'FR') {
+
+  if ($conf->{country} eq 'FR') {
     foreach my $arrow (@_) {
       if    ($arrow =~ /sharp_left/)     {push(@deg,180);}
       elsif ($arrow =~ /(^|;|\s)left/)   {push(@deg,180);}
@@ -971,6 +1030,19 @@ sub getBackground {
           $col = "white"   if $part eq 'back'; 
           $col = '#2568aa' if $part eq 'front';
           }
+        }
+#Main PT    
+      if ($conf->{country} eq 'PT') {
+        if (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^A/) || 
+#             ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^A/) ||
+            ($store->{$d}[0]{'highway'}[0] =~ /^motorway$/)) {
+          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'white'   if $part eq 'front';
+          }
+        else {
+          $col = "#ffffff" if $part eq 'back'; 
+          $col = 'black'   if $part eq 'front';
+          }
         }        
 #Main FR        
       if ($conf->{country} eq 'FR') {
@@ -1037,6 +1109,15 @@ sub getBackground {
           $col = 'white'   if $part eq 'front';
           }
         }        
+      
+#Entry PT
+      if ($conf->{country} eq 'PT' && $type eq ':to') {
+        if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A/)
+            || ($tags->{'destination:symbol:to'} && $tags->{'destination:symbol:to'}[$i] eq 'motorway')) {
+          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'white'   if $part eq 'front';
+          }
+        }        
       }      
     }
   if( $col eq '' && $part eq 'front') {
@@ -1074,7 +1155,7 @@ sub drawText {
   if($store->{$d}[$lane]{'destination'.$type}) {  
     my $text =  $store->{$d}[$lane]{'destination'.$type}[$i];  
     my $tcol = getBackground($lane,$i,$type,'front');
-    $image .= '<g transform="translate('.$pos.' 0)"><text class="resizeme" datapos="'.$pos.'" style="fill:'.$tcol.'">'.$text.'</text></g>'."\n";
+    $image .= '<g transform="translate('.$pos.' 0)">'."\n".'<text class="resizeme" datapos="'.$pos.'" style="fill:'.$tcol.'">'.$text.'</text>'."\n".'</g>'."\n";
     }
   return $image;
   }
