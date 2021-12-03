@@ -15,6 +15,7 @@
     mydata.tags = new Object;
     
     var tagstring = document.getElementsByName("tags")[0].value;
+    var tagstringurl = tagstring.replace(/\r\n|\r|\n/g,"%0A")
     var tags = tagstring.split('\n');
     for(var i = 0; i < tags.length; ++i){
       var kv = tags[i].split("=");
@@ -27,7 +28,7 @@
 
 //  var direction = document.getElementsByName('direction')[0].value;
     var country = document.getElementsByName('country')[0].value;
-    document.getElementById("permalink").href = '#country='+country+'&tags='+tagstring;
+    document.getElementById("permalink").href = '#country='+country+'&tags='+tagstringurl;
     }
     
   function showdata(d) {
@@ -82,7 +83,7 @@ for(i=0; i<hash.length; i++ ){
   var t = hash[i].split('=');
   t = [t.shift(), t.join('=')];
   if (t[0]=="country")  {   document.getElementsByName('country')[0].value = t[1];    }
-  if (t[0]=="tags")  {   document.getElementsByName('tags')[0].value = unescape(t[1]);    }
+  if (t[0]=="tags")  {   document.getElementsByName('tags')[0].value = decodeURIComponent(JSON.parse('"' + t[1].replace(/\"/g, '\\"') + '"'));;    }
   }
 getSign();
 
