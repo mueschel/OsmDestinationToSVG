@@ -122,6 +122,10 @@ my @bottom  = (0,0,0,0,0,0,0,0,0,0);
 @pinline  = ( 0,         0,   0,     0,       0)   if($conf->{country} eq 'FR');
 @bottom   = ( 0,         0,   0,     0,       0)   if($conf->{country} eq 'FR');
 
+@order    = ('country','to','dest','symbol','ref') if($conf->{country} eq 'SR');
+@pinline  = ( 0,        0,   0,     0,       0)    if($conf->{country} eq 'SR');
+@bottom   = ( 0,        1,   0,     0,       1)    if($conf->{country} eq 'SR');
+
 my $allowstack = 0;  
   
 #################################################
@@ -474,7 +478,7 @@ sub allsameorempty {
 ## Finish image output
 #################################################    
 # $hasarrows *= $hasbottomline;
-$error .= $hasarrows.$hasbottomline;
+# $error .= $hasarrows.$hasbottomline;
 $hasbottomline = 0 if $hasarrows;
 my $imgheight  = $sizes->{currenty}+20+$hasarrows*30+$hasbottomline*20;
 my $imgwidth   = $lanecounter*$SIGNWIDTH+10;
@@ -493,9 +497,9 @@ print encode('utf-8',$image);
 
 # $error .= Dumper $conf;
 # $error .= Dumper $store;
-# print '<pre>';
-# print encode('utf-8',$error);
-# print '</pre>';
+print '<pre>';
+print encode('utf-8',$error);
+print '</pre>';
 
 
 
@@ -688,7 +692,7 @@ sub checkSplitLanes {
         next if $k eq 'ref';
         next if $k eq 'int_ref';
 
-        next if grep( /^$k$/, qw(destination:colour:to destination:symbol:to destination:symbol destination:colour destination:arrow));
+        next if grep( /^$k$/, qw(destination:colour:to destination:colour destination:arrow)); #destination:symbol:to  destination:symbol 
         my @tmp = @{$store->{$d}[$lanenum]{$k}};
         my $i = scalar @tmp;
         while($i--) {
@@ -697,14 +701,14 @@ sub checkSplitLanes {
           $found[$j]++;
           if ($j) {
             splice(@{$store->{$d}[$lanenum]{$k}},$i,1);  
-            if($k eq 'destination') {
+            if($k eq 'destination' || ($k eq 'destination:symbol' && $store->{$d}[$lanenum]{'destination'})==undef) {
               if($store->{$d}[$lanenum]{'destination:colour'}) {
                 splice(@{$store->{$d}[$lanenum]{'destination:colour'}},$i,1);  
                 }
               if($store->{$d}[$lanenum]{'destination:arrow'}) {
                 splice(@{$store->{$d}[$lanenum]{'destination:arrow'}},$i,1);  
                 }
-              if($store->{$d}[$lanenum]{'destination:symbol'}) {
+              if($store->{$d}[$lanenum]{'destination:symbol'} && $k ne 'destination:symbol') {
                 splice(@{$store->{$d}[$lanenum]{'destination:symbol'}},$i,1);  
                 }      
               }
@@ -741,7 +745,7 @@ sub checkSplitLanes {
         $conf->{$d}->{splitlane}[$lanenum+1] = 3;
         last;
         }
-      $error .=  Dumper $store;  
+#       $error .=  Dumper $store;  
       }
     }
   }
@@ -776,8 +780,7 @@ sub makeRef {
     if ($text =~ /^\s*E\s*/) { $tcol = 'white'; $bcol = '#007f00';}
     $text =~ s/^\s*B\s*//;
     $text =~ s/\s//g;
-    }    
-
+    }        
 
   if($conf->{country} eq 'FR') {
     if ($text =~ /^\s*[AN][\s\d]+/) { $tcol = 'white'; $bcol = 'red';}
@@ -795,7 +798,12 @@ sub makeRef {
     $text =~ s/^\s//g;
     $text =~ s/\s$//g;
     }      
-
+    
+  if($conf->{country} eq 'SR') {
+    $bcol = '#f0e060';
+    if ($text =~ /^\s*A/) { $tcol = 'white'; $bcol = '#007f00';}
+    if ($text =~ /^\s*E/) { $tcol = 'white'; $bcol = '#007f00';}
+    }
     
   if($tags->{'destination:colour:ref'} && ($tags->{'destination:colour:ref'}[$entry] || scalar $tags->{'destination:colour:ref'} == 1)) {
     $bcol = $tags->{'colour:ref'}[$entry] // $tags->{'destination:colour:ref'}[0];
@@ -1057,6 +1065,23 @@ sub getBackground {
           $col = 'black'   if $part eq 'front';
           }
         }
+#Main SR    
+      if ($conf->{country} eq 'SR') {
+        if (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^A/) || 
+            ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^A/) ||
+            ($store->{$d}[0]{'highway'}[0] =~ /^motorway/)) {
+          $col = "#007f00" if $part eq 'back'; 
+          $col = 'white'   if $part eq 'front';
+          }
+        elsif (($store->{$d}[0]{'highway'}[0] =~ /^trunk/)) {
+          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'white'   if $part eq 'front';
+        }
+        else {
+          $col = "#f0e060" if $part eq 'back'; 
+          $col = 'black'   if $part eq 'front';
+          }
+        }        
       }
     }
     
