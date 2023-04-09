@@ -19,6 +19,7 @@
     var tags = tagstring.split('\n');
     for(var i = 0; i < tags.length; ++i){
       var kv = tags[i].split("=");
+      if(kv[1] == undefined) continue;
       mydata.tags[kv[0].trim()] = kv[1].trim();
       }
     console.log(mydata);

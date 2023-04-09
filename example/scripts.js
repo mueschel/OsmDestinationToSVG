@@ -1,6 +1,6 @@
 var endpoint = "https://overpass.kumi.systems/api/";
 
-function getData(command,dId,callback,data) {
+function getData(command,dId,callback,data,id) {
   
   var xmlhttp = null;
   var cb = null;
@@ -9,6 +9,7 @@ function getData(command,dId,callback,data) {
   var destId = dId;
   var cmd = command;
   var dat = data;
+  var fieldid = id;
   
   xmlhttp.onreadystatechange = function() {
     if(xmlhttp.readyState == 4) {
@@ -16,7 +17,7 @@ function getData(command,dId,callback,data) {
         document.getElementById(destId).innerHTML  = xmlhttp.responseText;  
         }
       if(cb) {
-        cb(xmlhttp.responseText);
+        cb(xmlhttp.responseText,fieldid);
         }
       }
     }

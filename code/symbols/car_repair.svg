@@ -1,0 +1,22 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!--
+   ***************************************************************************
+   Bundesanstalt fuer Strassenwesen
+   RWBA-Symbol
+   Bezeichnung:
+   Pannenhilfe
+   Ausdehnung in cm:
+         X_min     X_max     Y_min     Y_max
+         0.00000  15.00000   0.00000  15.00000
+-->
+<svg width="150" height="150" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<!--
+   ***************************************************************************
+-->
+<path fill="white" fill-rule="evenodd" stroke="black" stroke-width="0.25" d="M0 150L0 0L150 0L150 150L0 150Z" />
+<!--
+      WERKZEUG
+-->
+<path fill="black" fill-rule="evenodd" stroke="none" d="M75 133.125L86.25 133.125L84.375 78.75L82.5 78.75L82.5 52.5L101.25 45L101.25 37.5L82.5 37.5L82.5 31.875L101.25 31.875L101.25 24.375L82.5 16.875L67.5 16.875L48.75 24.375L48.75 31.875L67.5 31.875L67.5 37.5L48.75 37.5L48.75 45L67.5 52.5L67.5 78.75L65.625 78.75L63.75 133.125L75 133.125Z" />
+</svg>

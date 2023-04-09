@@ -219,9 +219,13 @@ foreach my $d (@showdirections) {
               }
 
             $tmp = $l->{'destination:symbol:to'}[$i] if ($l->{'destination:symbol:to'});
-            if ($tmp && $signs{$tmp}) {
-              $image .= '<image href="'.$signs{$tmp}.'" width="18" height="18" transform="translate('.$pos.' -10)"/>'."\n";
-              $pos += 18;
+            if ($tmp) {
+              foreach my $t (split(',',$tmp)) {
+                $t = lc($t);
+                $t = "notfound" unless ($signs{$t});
+                $image .= '<image href="'.$signs{$t}.'" width="18" height="18" transform="translate('.$pos.' -10)"/>'."\n";
+                $pos += 20;
+                }
               }          
 
             if ($conf->{$d}{orderedrefto}[$lane]  &&  $l->{'destination:ref:to'} && ($tmp = $l->{'destination:ref:to'}[$i])) {
@@ -261,10 +265,14 @@ foreach my $d (@showdirections) {
  
             if($l->{'destination:symbol'} && $conf->{$d}{numbersymbols}[$lane] == 0) {
               $tmp = $l->{'destination:symbol'}[$i]; 
-              if ($tmp && $signs{$tmp}) {
-                $image .= '<image href="'.$signs{$tmp}.'" width="18" height="18" transform="translate('.$pos.' -10)"/>'."\n";
-                $pos += 20;
-                }       
+              if ($tmp) {
+                foreach my $t (split(',',$tmp)) {
+                  $t = lc($t);
+                  $t = "notfound" unless ($signs{$t});
+                  $image .= '<image href="'.$signs{$t}.'" width="18" height="18" transform="translate('.$pos.' -10)"/>'."\n";
+                  $pos += 20;
+                  }
+                }
               }
             if($l->{'destination:country'} && $conf->{$d}{numbercountries}[$lane] == 0) {
               $tmp = $l->{'destination:country'}[$i]; 
@@ -297,11 +305,15 @@ foreach my $d (@showdirections) {
         if($conf->{$d}{numbersymbols}[$lane]) {
           for(my $i = 0; $i < $conf->{$d}{numbersymbols}[$lane];$i++) {
             my $tmp = $l->{'destination:symbol'}[$i] if ($l->{'destination:symbol'}); 
-            if ($tmp && $signs{$tmp}) {
-              $image .= '<g transform="translate('.$pos.' '.$entrypos.')">'."\n";
-              $image .= '<image href="'.$signs{$tmp}.'" width="18" height="18" transform="translate(0 -10)"/>'."\n";
-              $image .= "</g>\n";  
-              $pos += 25;
+            if ($tmp) {
+              foreach my $t (split(',',$tmp)) {
+                $t = lc($t);
+                $t = "notfound" unless ($signs{$t});
+                $image .= '<g transform="translate('.$pos.' '.$entrypos.')">'."\n";
+                $image .= '<image href="'.$signs{$t}.'" width="18" height="18" transform="translate(0 -10)"/>'."\n";
+                $image .= "</g>\n";  
+                $pos += 25;
+                }  
               $newline = 1;
               }       
             }
@@ -525,6 +537,7 @@ sub getLaneTags {
   my $sk = $k;
      $sk =~ s/(:backward|:forward|:lanes)//g;
   my $direction = $conf->{oneway} // 0;
+  if ($k =~ /:both_ways/) {next;}
   if ($k =~ /:backward/) {$direction = -1;}
   if ($k =~ /:forward/) {$direction = 1;}
   
@@ -687,21 +700,22 @@ sub checkSplitLanes {
             && !isFoundInNext($d,$lanenum,'turn',$store->{$d}[$lanenum]{'turn'}[1]));
       my $empty = 1;
       my @found = (0,0,0);
-      foreach my $k (keys %{$store->{$d}[$lanenum]}) {
+      foreach my $k (sort keys %{$store->{$d}[$lanenum]}) {
         next if $k eq 'turn';
         next if $k eq 'ref';
         next if $k eq 'int_ref';
-
-        next if grep( /^$k$/, qw(destination:colour:to destination:colour destination:arrow)); #destination:symbol:to  destination:symbol 
+        next if $k eq 'highway';
+        
+        next if grep( /^$k$/, qw(destination:colour:to destination:colour destination:arrow destination:arrow:to)); #destination:symbol:to  destination:symbol 
         my @tmp = @{$store->{$d}[$lanenum]{$k}};
         my $i = scalar @tmp;
         while($i--) {
           my $j = isFoundInNext($d,$lanenum,$k,$tmp[$i]);
-#           $error .= $lanenum.$tmp[$i]." ".$j."\n";
+#            $error .= $lanenum.$tmp[$i]." ".$j."\n";
           $found[$j]++;
           if ($j) {
             splice(@{$store->{$d}[$lanenum]{$k}},$i,1);  
-            if($k eq 'destination' || ($k eq 'destination:symbol' && $store->{$d}[$lanenum]{'destination'})==undef) {
+            if($k eq 'destination' || ($k eq 'destination:symbol' && $store->{$d}[$lanenum]{'destination'}==undef)) {
               if($store->{$d}[$lanenum]{'destination:colour'}) {
                 splice(@{$store->{$d}[$lanenum]{'destination:colour'}},$i,1);  
                 }
@@ -712,7 +726,7 @@ sub checkSplitLanes {
                 splice(@{$store->{$d}[$lanenum]{'destination:symbol'}},$i,1);  
                 }      
               }
-            if($k eq 'destination:to' || ($k eq 'destination:symbol:to' && $store->{$d}[$lanenum]{'destination:to'})==undef) {
+            if($k eq 'destination:to' || ($k eq 'destination:symbol:to' && $store->{$d}[$lanenum]{'destination:to'}==undef)) {
               if($store->{$d}[$lanenum]{'destination:colour:to'}) {
                 splice(@{$store->{$d}[$lanenum]{'destination:colour:to'}},$i,1);  
                 }
@@ -738,12 +752,13 @@ sub checkSplitLanes {
       elsif($found[1] > 0  && $found[2] == 0) {
         insertSplitLane($lanenum,$d,1);
         $conf->{$d}->{splitlane}[$lanenum] = 2;
-        last;
+#         last;
         }
       elsif($found[1] == 0  && $found[2] > 0) {
         insertSplitLane($lanenum+1,$d,-1);
         $conf->{$d}->{splitlane}[$lanenum+1] = 3;
-        last;
+        $lanenum++;
+        #last;
         }
 #       $error .=  Dumper $store;  
       }
@@ -824,7 +839,6 @@ sub makeRef {
   return $o;
 }
   
- 
 #################################################
 ## Draw arrows
 #################################################     
@@ -870,12 +884,23 @@ sub getArrow {
   elsif ($conf->{$d}{arrowpos}[$lane] eq 'center') {
 #     $height = 2+$conf->{$d}{maxentries}*20;
     if ($conf->{$d}{splitlane}[$lane]) {
+
+      #If I'm a split lane, and (the lane on the right if 3, has arrowpos=none, then remove 2nd arrow) 
+      #                         (the lane on the left if 2, has arrowpos=none, then remove 1st arrow) 
+      if ($conf->{$d}{splitlane}[$lane]==3 && $conf->{$d}{arrowpos}[$lane+1] eq 'none') {
+        $conf->{$d}{arrows}[$lane][-1] = 'none';
+        }
+      if ($conf->{$d}{splitlane}[$lane]==2 && $conf->{$d}{arrowpos}[$lane-1] eq 'none') {
+        $conf->{$d}{arrows}[$lane][0] = 'none';
+        }
+      
       my @col;
       $col[0] = getBackground($lane-1,$entry,'main','front');
       $col[1] = getBackground($lane+1,$entry,'main','front');
       my $i = 0;
       my $offset = -15*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
       foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
+        next if $deg eq 'none';
         $o .= '<use href="#arrow" transform="translate('.($SIGNWIDTH/8+$offset).' %ARROWPOS%) rotate('.$deg.' 0 0)" style="stroke:'.$col[$i++].';"/>'."\n";
         $offset += 30;
         }

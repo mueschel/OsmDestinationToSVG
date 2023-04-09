@@ -1,0 +1,29 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!--
+   ***************************************************************************
+   Bundesanstalt fuer Strassenwesen
+   RWBA-Symbol
+   Bezeichnung:
+   Verkaufskiosk
+   Ausdehnung in cm:
+         X_min     X_max     Y_min     Y_max
+         0.00000  15.00000   0.00000  15.00000
+-->
+<svg width="150" height="150" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<!--
+   ***************************************************************************
+-->
+<path fill="white" fill-rule="evenodd" stroke="black" stroke-width="0.25" d="M0 150L0 0L150 0L150 150L0 150Z" />
+<!--
+      * SYMBOL TASSE MIT UNTERTASSE *
+-->
+<path fill="black" fill-rule="evenodd" stroke="none" d="M20 100L130 100A10 10 0 0 1 120 110L30 110A10 10 0 0 1 20 100Z
+  M30 50L127.5 50A10 10 0 0 1 136.160254037844 65A10 10 0 0 1 132.5 68.6602540378444L109.966998901865 81.6696859750713A55 55 0 0 1 96.6227756375411 95.0000006775304L53.3772243624589 95.0000006775304A55 55 0 0 1 30 50Z
+  M119.7723 55L127.5 55A5 5 0 0 1 131.830127018922 62.5A5 5 0 0 1 130 64.3301270189222L114.951523044392 73.0183697412653A55 55 0 0 0 119.772255625765 55.0000013665832Z" />
+<!--
+       * UNTERTASSE *
+       * TASSE AUSSEN *
+       * HENKEL INNEN *
+-->
+</svg>
