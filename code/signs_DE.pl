@@ -1,6 +1,7 @@
  notfound         => "../../destinations/code/symbols/notfound.svg",
  aerialway        => "../../destinations/code/symbols/funicular.svg",  
  airport          => "../../destinations/code/symbols/airport.svg",
+ attraction       => "../../destinations/code/symbols/viewpoint.svg",
  beach            => "../../destinations/code/symbols/beach.svg",
  bicycle          => "../../destinations/code/symbols/bicycle.svg",
  bus              => "../../destinations/code/symbols/bus.svg",
@@ -20,7 +21,9 @@
  church           => "../../destinations/code/symbols/church.png",
  city_centre      => "../../destinations/code/symbols/centre.png",
  coffee           => "../../destinations/code/symbols/cafe.svg",  
+ commercial       => "../../destinations/code/symbols/shopping.svg",  
  covered_parking  => "../../destinations/code/symbols/covered_parking.svg",
+ disabled_toilet  => "../../destinations/code/symbols/disabled_toilet.svg",
  elevator         => "../../destinations/code/symbols/elevator.svg",
  ferry            => "../../destinations/code/symbols/ferry.svg",
  fuel             => "../../destinations/code/symbols/fuel.svg",  
@@ -35,6 +38,7 @@
  harbor           => "../../destinations/code/symbols/ferry.svg",
  harbour          => "../../destinations/code/symbols/ferry.svg",
  hgv              => "../../destinations/code/symbols/hgv.svg",
+ historic         => "../../destinations/code/symbols/castle.svg",
  hospital         => "../../destinations/code/symbols/hospital.svg", 
  hotel            => "../../destinations/code/symbols/hotel.svg",
  industrial       => "../../destinations/code/symbols/industrial.svg",
@@ -47,15 +51,23 @@
  motorroad        => "../../destinations/code/symbols/motorroad.svg", 
  motorway         => "../../destinations/code/symbols/motorway.svg", 
  motorway_junction=> "../../destinations/code/symbols/motorway_junction.svg", 
+ park             => "../../destinations/code/symbols/picnic.svg",
  park_and_ride    => "../../destinations/code/symbols/park_and_ride.svg",  
  parking          => "../../destinations/code/symbols/parking.svg",  
+ parking_truck    => "../../destinations/code/symbols/parking_truck.svg",  
  phone            => "../../destinations/code/symbols/phone.svg",
  phone_emergency  => "../../destinations/code/symbols/phone_emergency.svg",  
+ picnic           => "../../destinations/code/symbols/picnic.svg",
+ picnic_site      => "../../destinations/code/symbols/picnic.svg",
+ picnic_table     => "../../destinations/code/symbols/picnic.svg",
  police           => "../../destinations/code/symbols/police.svg", 
  port             => "../../destinations/code/symbols/ferry.svg",
  rest_area        => "../../destinations/code/symbols/parking.svg",   
  restaurant       => "../../destinations/code/symbols/restaurant.svg", 
  's-bahn'         => "../../destinations/code/symbols/sbahn.svg", 
+ shop             => "../../destinations/code/symbols/shopping.svg",  
+ shopping         => "../../destinations/code/symbols/shopping.svg",  
+ shopping_centre  => "../../destinations/code/symbols/shopping.svg",  
  snack_bar        => "../../destinations/code/symbols/cafe.svg",  
  soccer_stadium   => "../../destinations/code/symbols/stadium.svg", 
  stadium          => "../../destinations/code/symbols/stadium.svg", 
@@ -71,6 +83,7 @@
  tram             => "../../destinations/code/symbols/tram.svg",
  truck            => "../../destinations/code/symbols/hgv.svg",
  trucks           => "../../destinations/code/symbols/hgv.svg",
+ truck_stop       => "../../destinations/code/symbols/parking_truck.svg",  
  trunk            => "../../destinations/code/symbols/motorroad.svg",
  tunnel           => "../../destinations/code/symbols/tunnel.svg",
  'u-bahn'         => "../../destinations/code/symbols/underground.png",
@@ -79,19 +92,9 @@
  wheelchair       => "../../destinations/code/symbols/wheelchair.svg",
 
 #TODO Missing symbols used > 50 times
-#parking_truck
-#truck_stop
 #zoo
-#attraction
 #freight_village
-#historic
-#commercial
-#shop
-#shopping
-#disabled_toilet
 #railroad_freight_terminal
-#park
 #fair
-#car_shuttle_train
 #bridge
 
