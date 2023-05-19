@@ -1027,7 +1027,7 @@ sub getBackground {
             && (scalar @{$tags->{'destination:colour:text'}}) == 1
             && $tags->{'destination:colour:text'}[0] ne ''
             ) {
-          $col = $tags->{'destination:colour'}[0];
+          $col = $tags->{'destination:colour:text'}[0];
           }
         elsif ($conf->{country} eq 'AT' && $tags->{'destination:colour'}[0] eq 'green') {
           $col = 'yellow';
