@@ -541,8 +541,8 @@ sub getLaneTags {
   if ($k =~ /:backward/) {$direction = -1;}
   if ($k =~ /:forward/) {$direction = 1;}
   
-  $v =~ s/none//g;
-  $v =~ s/none;//g;
+  $v =~ s/(^|;|\||\s)none($|\s|;|\|)/$1$2/g;
+#   $v =~ s/none;//g;
   $v =~ s/(^|;|\|)\s+/$1/g;
   $v =~ s/\s+($|;|\|)/$1/g;
   
