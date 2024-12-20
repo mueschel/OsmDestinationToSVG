@@ -31,7 +31,7 @@
 <h1>Destination Signs</h1>
 <p><strong>This tool shows the content of destination tags on roads.</strong>
 Select one of the marked ways on the map to show the corresponding destination signs.
-<br>The code is available on <a href="https://github.com/mueschel/OsmDestinationSigns">Github</a>.
+<br>The code is available on <a href="https://github.com/mueschel/OsmDestinationToSVG">Github</a>.
 <div class="config">
 <h3>Configuration</h3>
 <form onsubmit="getsign(document.getElementsByName('wayid')[0].value); return false;">
@@ -133,6 +133,17 @@ function loaddata_i(mydata) {
         document.getElementById(containerId).innerHTML += "<p><b>" + key + "</b> = " + str + "</p>";
     }
   }
+  function displayLinkToSandbox(tags, country) {
+    var tagstringurl = 'sandbox.htm#country='+country+'&tags=';
+    for (var key in tags) {
+        var str = tags[key];
+		tagstringurl += key + '=' + tags[key] + "%0A";
+    } 
+	tagstringurl = tagstringurl.replace(/\r\n|\r|\n/g,"%0A");
+		
+    var container = document.getElementById('tagsDestination');
+    container.innerHTML += '<p>↳<a href="' + tagstringurl + '" target="_blank">Open in Sandbox</a></p>';
+  }
   
   // Ziel-Tags und andere Tags anzeigen
   displayTags(destinationTags, "tagsDestination");
@@ -142,6 +153,7 @@ function loaddata_i(mydata) {
   var direction = document.getElementsByName('direction')[0].value;
   var country = document.getElementsByName('country')[0].value;
   document.getElementById("permanode").href = '#wayid='+way+'&direction='+direction+'&country='+country;   
+  displayLinkToSandbox(destinationTags, country);
   
   return 0;
 }
