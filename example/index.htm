@@ -5,12 +5,13 @@
  <script src="../example/scripts.js" type="text/javascript"></script>
  <script src="../code/svgclean.js" type="text/javascript"></script>
  <meta  charset="UTF-8"/>
+ <meta name="viewport" content="width=device-width; initial-scale=1.0;" /> 
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
-  integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha512-Zcn6bjR/8RZbLEpLIeOwNtzREBAJnUKESxces60Mpoj+2okopSAcSUIUOseddDm0cxnGQzxIR7vJgsLZbdLE3w=="
   crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
-  integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg=="
   crossorigin=""></script>
  <link rel="stylesheet" type="text/css" href="../example/website.css">
 
@@ -33,22 +34,35 @@ Select one of the marked ways on the map to show the corresponding destination s
 <br>The code is available on <a href="https://github.com/mueschel/OsmDestinationSigns">Github</a>.
 <div class="config">
 <h3>Configuration</h3>
-<div><form action="" onsubmit="getsign(document.getElementsByName('wayid')[0].value); return false;">
+<form onsubmit="getsign(document.getElementsByName('wayid')[0].value); return false;">
 <!--   Style&nbsp;<select name="style"><option value="lanes">Lanes Based<option value="direction">Direction Based</select><br> -->
-  Direction <select name="direction"><option value="0">Both<option value="1">Forward<option value="-1">Backward</select><br>  
-  Country <select name="country"><option value="DE">Germany<option value="AT">Austria<option value="FR">France<option value="IT">Italy<option value="SR">Serbia<option value="PT">Portugal</select><br> 
-  WayId <input type="text" name="wayid"><br>
+  <div>
+  <label for="direction">Direction:</label>
+  <select name="direction" id="direction"><option value="0">Both<option value="1">Forward<option value="-1">Backward</select>
+  </div>
+  <div>
+  <label for="country">Country:</label>
+  <select name="country" id="country"><option value="DE">Germany<option value="AT">Austria<option value="FR">France<option value="IT">Italy<option value="SR">Serbia<option value="PT">Portugal</select>
+  </div>
+  <div>
+  <label for="wayid">WayId:</label><input type="text" name="wayid" id="wayid">
+  </div>
+  <div>  
   <input type="submit" />
-    <br><a id="permanode" href="">Link to this way</a>
+  </div>
+    <div><a id="permanode" href="">Link to this way</a></div>
 </form>
 </div>
+<div id="tagSection">
+<div id="tagsHeader"></div>
+<div id="tagsOther"></div>
+<div id="tagsDestination"></div>
 </div>
-<div id="tags"></div>
 </div>
-<div style="margin-bottom:50px;margin-top:10px;clear:both;width:420px;height:1px;border-bottom:1px solid black;">
-<p><div id="map"></div>
-<div id="container">&nbsp;</div>
-</div>
+
+<div id="container">Sign&nbsp;</div>
+<p></p><div id="map"></div>
+
 
 </body>
 <script type="text/javascript">
@@ -87,14 +101,42 @@ function loaddata_i(mydata) {
   document.getElementsByName('wayid')[0].value = mydata.id;
   document.getElementById('container').innerHTML = "<h3>Loading...</h3>";
   
-  document.getElementById("tags").innerHTML = "<h3>Tags</h3><p><a target=\"_blank\" href=\"https://osm.org/way/"+mydata.id+"\">Way "+mydata.id+"</a><br/>";
+  document.getElementById("tagsHeader").innerHTML = "<h3>Tags <a target=\"_blank\" href=\"https://osm.org/way/"+mydata.id+"\">Way "+mydata.id+"</a></h3>";
+  
+  
+  var destinationTags = {};
+  var otherTags = {};
+
+  // Tags sortieren
   for (var key in mydata.tags) {
-    str = mydata.tags[key];
-    if(str.indexOf('|') != -1) {
-      str = '<br/>&nbsp;'+str.replace(/\|/g,'&nbsp;|<br/>&nbsp;');
-      }
-    document.getElementById("tags").innerHTML += "<p><b>"+key+"</b> = "+str;
+    if (key.startsWith("destination")) {
+        destinationTags[key] = mydata.tags[key];
+    } else {
+        otherTags[key] = mydata.tags[key];
     }
+  }
+  // Tags anzeigen
+  function displayTags(tags, containerId) {
+    document.getElementById(containerId).innerHTML = "";
+    for (var key in tags) {
+        var str = tags[key];
+        if (str.indexOf('|') != -1) {
+            str = '<br/>&nbsp;' + str.replace(/\|/g, '&nbsp;|<br/>&nbsp;');
+        }		
+        if (str.indexOf(';') != -1) {
+            str = str.replace(/;/gi, ';<wbr />');
+        }	
+        if (key.indexOf(':') != -1) {
+            key = key.replace(/:/gi, '<wbr />:');
+        }
+		
+        document.getElementById(containerId).innerHTML += "<p><b>" + key + "</b> = " + str + "</p>";
+    }
+  }
+  
+  // Ziel-Tags und andere Tags anzeigen
+  displayTags(destinationTags, "tagsDestination");
+  displayTags(otherTags, "tagsOther");
     
   var way = document.getElementsByName("wayid")[0].value;
   var direction = document.getElementsByName('direction')[0].value;
