@@ -27,11 +27,17 @@
  <base target="_blank">
 </head>
 <body class="mappage">
+<div id="tagSection">
 <div id="header">
 <h1>Destination Signs</h1>
 <p><strong>This tool shows the content of destination tags on roads.</strong>
 Select one of the marked ways on the map to show the corresponding destination signs.
 <br>The code is available on <a href="https://github.com/mueschel/OsmDestinationToSVG">Github</a>.
+
+</div>
+
+<p></p><div id="map"></div>
+<div id="container">&nbsp;</div>
 <div class="config">
 <h3>Configuration</h3>
 <form onsubmit="getsign(document.getElementsByName('wayid')[0].value); return false;">
@@ -55,16 +61,10 @@ Select one of the marked ways on the map to show the corresponding destination s
 <br>
   <label for="hideOther">Hide other tags:</label><input type="checkbox" name="hideOther" id="hideOther" onClick="toggleOtherTagsVisibility()"></>
 </div>
-<div id="tagSection">
 <div id="tagsHeader"></div>
 <div id="tagsOther"></div>
 <div id="tagsDestination"></div>
 </div>
-</div>
-
-<div id="container">&nbsp;</div>
-<p></p><div id="map"></div>
-
 </body>
 
 <script type="text/javascript">
@@ -75,27 +75,30 @@ function toggleOtherTagsVisibility() {
     x.style.display = "none";
   } else {
     x.style.display = "block";
-    x.style.order = 3;
   }
 } 
 
 function showdata(d) {
   var data;
+  var myContainer = document.getElementById('container');
   try {
     data = JSON.parse(d);
     
-    document.getElementById('container').innerHTML = "";
+    myContainer.innerHTML = "";
     if (data) {
-      document.getElementById('container').innerHTML = data;
+      myContainer.innerHTML = data;
       }
 //     if(data.html) {  
-//       document.getElementById('container').innerHTML += data.html;
+//       myContainer.innerHTML += data.html;
 //       }
     } 
   catch (e) {
-    document.getElementById('container').innerHTML = d;
+    myContainer.innerHTML = d;
     }
   toggleOtherTagsVisibility()
+  if (!isDestinationSignInViewPort()) {
+	myContainer.scrollIntoView(false);
+  }
   if(cleanup) {cleanup();}
   }
 
@@ -244,7 +247,13 @@ function handleWindowSizeChange(e) {
   checkboxHideOther.checked = e.matches;
   toggleOtherTagsVisibility();
 }
-
+function isDestinationSignInViewPort(el) {
+    var rect = document.getElementById('container').getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+    );
+}
 // Register event listener
 mediaQuery.addListener(handleWindowSizeChange);
 
