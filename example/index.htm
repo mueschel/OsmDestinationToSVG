@@ -52,6 +52,8 @@ Select one of the marked ways on the map to show the corresponding destination s
   </div>
     <div><a id="permanode" href="">Link to this way</a></div>
 </form>
+<br>
+  <label for="hideOther">Hide other tags:</label><input type="checkbox" name="hideOther" id="hideOther" onClick="toggleOtherTagsVisibility()"></>
 </div>
 <div id="tagSection">
 <div id="tagsHeader"></div>
@@ -63,9 +65,19 @@ Select one of the marked ways on the map to show the corresponding destination s
 <div id="container">&nbsp;</div>
 <p></p><div id="map"></div>
 
-
 </body>
+
 <script type="text/javascript">
+function toggleOtherTagsVisibility() {
+  var x = document.getElementById("tagsOther");
+  var isHide = document.getElementById("hideOther").checked;
+  if (isHide) {
+    x.style.display = "none";
+  } else {
+    x.style.display = "block";
+    x.style.order = 3;
+  }
+} 
 
 function showdata(d) {
   var data;
@@ -83,6 +95,7 @@ function showdata(d) {
   catch (e) {
     document.getElementById('container').innerHTML = d;
     }
+  toggleOtherTagsVisibility()
   if(cleanup) {cleanup();}
   }
 
@@ -92,6 +105,7 @@ function loaddata() {
   
 function loaddata_i(mydata) {
   var url = '../code/generate.pl';
+  const relevantKeys = ["destination", "turn", "ref", "highway", "lanes", "colour", "direction", "country", "oneway"];
 //   console.log(mydata);
   mydata.direction = document.getElementsByName("direction")[0].value;
   mydata.country = document.getElementsByName("country")[0].value;
@@ -109,7 +123,8 @@ function loaddata_i(mydata) {
 
   // Tags sortieren
   for (var key in mydata.tags) {
-    if (key.startsWith("destination")) {
+   var startsWithAny = relevantKeys.some(searchString => key.startsWith(searchString));
+    if (startsWithAny) {
         destinationTags[key] = mydata.tags[key];
     } else {
         otherTags[key] = mydata.tags[key];
@@ -221,6 +236,20 @@ if(way) {
   getsign(way);
   } 
 
+
+const mediaQuery = window.matchMedia('(max-width: 50em)');
+
+function handleWindowSizeChange(e) {
+  var checkboxHideOther = document.getElementById("hideOther");
+  checkboxHideOther.checked = e.matches;
+  toggleOtherTagsVisibility();
+}
+
+// Register event listener
+mediaQuery.addListener(handleWindowSizeChange);
+
+// Initial check
+handleWindowSizeChange(mediaQuery);
 
 </script>
 
