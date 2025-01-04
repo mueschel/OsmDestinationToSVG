@@ -93,57 +93,64 @@ z-index: 0;
 
 /* Responsive Design */
 @media (max-width: 50em) {
-div#tagSection { width: 100%; }
-
-div#header {
-position: relative; /* Ändern Sie die Position, um es unter dem Header zu platzieren */
-width: 100%; /* Vollständige Breite auf kleinen Bildschirmen */
-order: 1; 
-}
-
-.simplepage #map,
-.mappage #map, div#map {
-position: relative; /* Ändern Sie die Position, um es unter dem Header zu platzieren */
-top: 0; /* Setzen Sie den oberen Abstand auf 0 */
-right: 0; /* Setzen Sie den rechten Abstand auf 0 */
-width: 90%; /* Vollständige Breite auf kleinen Bildschirmen */
-margin-top: 1em; /* Abstand zum Header */
-left: 1em;
-height:30em;
-max-height: 80vh;
-order: 3; 
-}
-
-
-div#container {
-padding-top: 0em;
-position: relative;
-z-index: 0;
-left: 0;
-width: 90%;
-order: 4; 
-}
-div#tagsHeader { order: 5; }
-div#tagsDestination { order: 6; }
-div#tagsOther { order: 7; }
-
-div#tagsOther, div#tagsDestination {
-display: block;
-width: 100%;
-position: relative;
-column-count: 2;
-column-gap: 1em;
-word-wrap: break-word;
+  div#tagSection { width: 100%; }
+  
+  div#header {
+  position: relative; /* Ändern Sie die Position, um es unter dem Header zu platzieren */
+  width: 100%; /* Vollständige Breite auf kleinen Bildschirmen */
+  order: 1; 
   }
-
-div.config {
-width: 90%;
-order: 2; 
-}
+  
+  .simplepage #map,
+  .mappage #map, div#map {
+  position: relative; /* Ändern Sie die Position, um es unter dem Header zu platzieren */
+  top: 0; /* Setzen Sie den oberen Abstand auf 0 */
+  right: 0; /* Setzen Sie den rechten Abstand auf 0 */
+  width: 90%; /* Vollständige Breite auf kleinen Bildschirmen */
+  margin-top: 1em; /* Abstand zum Header */
+  left: 1em;
+  height:30em;
+  max-height: 80vh;
+  order: 3; 
+  }
+  
+  div#container {
+  padding-top: 0em;
+  position: relative;
+  z-index: 0;
+  left: 0;
+  width: 90%;
+  order: 4; 
+  }
+  
+  div#tagsHeader { order: 5; }
+  div#tagsDestination { order: 6; }
+  div#tagsOther { order: 7; }
+  
+  div#tagsOther, div#tagsDestination {
+  display: block;
+  width: 100%;
+  position: relative;
+  column-count: 2;
+  column-gap: 1em;
+  word-wrap: break-word;
+  }
+  
+  div.config {
+  width: 90%;
+  order: 2; 
+  }
 }
 
 @media (max-width: 30em) {
-div#tagsOther, div#tagsDestination {
-column-count: 1;
+  div#tagsOther, div#tagsDestination {
+  column-count: 1;
+  }
+}
+
+/* Touchscreen */
+@media (pointer: coarse) {
+  .leaflet-interactive {
+    stroke-width: 8;
   }
 }
