@@ -34,6 +34,7 @@
  golf_court       => "../../destinations/code/symbols/golf_court.svg",
  harbor           => "../../destinations/code/symbols/ferry.svg",
  harbour          => "../../destinations/code/symbols/ferry.svg",
+ historic         => "../../destinations/code/symbols/France_road_sign_ID16a.svg",
  hgv              => "../../destinations/code/symbols/hgv.svg",
  hospital         => "../../destinations/code/symbols/hospital.svg", 
  hotel            => "../../destinations/code/symbols/hotel.svg",
