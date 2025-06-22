@@ -797,11 +797,11 @@ sub makeRef {
     }        
 
   if($conf->{country} eq 'FR') {
-    if ($text =~ /^\s*[AN][\s\d]+/) { $tcol = 'white'; $bcol = 'red';}
-    if ($text =~ /^\s*[EF][\s\d]+/) { $tcol = 'white'; $bcol = 'green';}
-    if ($text =~ /^\s*[D][\s\d]+/)  { $tcol = 'black'; $bcol = '#f0e060';}
-    if ($text =~ /^\s*[CR][\s\d]+/)  { $tcol = 'black'; $bcol = 'white';}
-    if ($text =~ /^\s*[MTP][\s\d]+/)  { $tcol = '#2568aa'; $bcol = 'white';}
+    if ($text =~ /^\s*[AN][\s\d]+/)  { $tcol = 'white'; $bcol = 'red';}
+    if ($text =~ /^\s*[EF][\s\d]+/)  { $tcol = 'white'; $bcol = 'green';}
+    if ($text =~ /^\s*[D][\s\d]+/)   { $tcol = 'black'; $bcol = '#f0e060';}
+    if ($text =~ /^\s*[CRP][\s\d]+/) { $tcol = 'black'; $bcol = 'white';}
+    if ($text =~ /^\s*[MT][\s\d]+/)  { $tcol = 'white'; $bcol = '#2a7fff';}
     }     
 
   if($conf->{country} eq 'PT') {
