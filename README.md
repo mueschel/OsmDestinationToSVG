@@ -12,7 +12,7 @@ Keys supported so far
   * destination:arrow, destination:arrow:to
   * destination:colour, destination:colour:to
   * destination:colour:back, destination:colour:text
-  * destination:colour:ref
+  * destination:colour:ref, destination:colour:arrow
   * turn
   * highway, ref, lanes
 
