@@ -103,8 +103,14 @@ function showdata(d) {
   if(cleanup) {cleanup();}
   }
 
+var nowHighlighted;
+
 function loaddata() {
   console.log(this);
+  if(nowHighlighted)
+    nowHighlighted.setStyle({  color: '#38f'  });
+  this.setStyle({   color: '#0d0'  });
+  nowHighlighted = this;
   loaddata_i(this.options.data);
 }  
   
