@@ -121,7 +121,7 @@
  monitored_parking=> "../../destinations/code/symbols/FR_ID1c.svg", 
  motorhome        => "../../destinations/code/symbols/FR_ID30.svg", 
  motorroad        => "../../destinations/code/symbols/motorroad.svg", 
- motorway         => "../../destinations/code/symbols/motorway.svg", 
+ motorway         => "../../destinations/code/symbols/FR_SC17.svg", 
  motorway_junction=> "../../destinations/code/symbols/motorway_junction.svg", 
  national_park    => "../../destinations/code/symbols/FR_ID15b.svg", 
  nature_reserve   => "../../destinations/code/symbols/FR_ID15c.svg", 
