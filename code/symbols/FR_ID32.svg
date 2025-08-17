@@ -10,7 +10,7 @@
    stroke-linejoin="round"
    xml:space="preserve"
    id="svg31"
-   sodipodi:docname="ID32.svg"
+   sodipodi:docname="FR_ID32.svg"
    inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -31,9 +31,9 @@
    fit-margin-right="50"
    fit-margin-bottom="50"
    showgrid="false"
-   inkscape:zoom="4.0684797"
-   inkscape:cx="490.84674"
-   inkscape:cy="561.88065"
+   inkscape:zoom="1.2013817"
+   inkscape:cx="253.04198"
+   inkscape:cy="435.3321"
    inkscape:window-width="1280"
    inkscape:window-height="731"
    inkscape:window-x="0"
@@ -400,7 +400,8 @@
         </g>
         <g
    class="com.sun.star.drawing.ClosedBezierShape"
-   id="g24">
+   id="g24"
+   transform="rotate(-10,5370.3138,16703.302)">
          <g
    id="id12">
           <rect
@@ -421,7 +422,8 @@
         </g>
         <g
    class="com.sun.star.drawing.ClosedBezierShape"
-   id="g25">
+   id="g25"
+   transform="translate(0,-539.99985)">
          <g
    id="id13">
           <rect
