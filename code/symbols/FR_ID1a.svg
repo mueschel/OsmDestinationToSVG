@@ -10,7 +10,7 @@
    stroke-linejoin="round"
    xml:space="preserve"
    id="svg25"
-   sodipodi:docname="ID1a.svg"
+   sodipodi:docname="FR_ID1a.svg"
    inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -32,7 +32,7 @@
    fit-margin-bottom="50"
    showgrid="false"
    inkscape:zoom="0.41497751"
-   inkscape:cx="283.14787"
+   inkscape:cx="278.32834"
    inkscape:cy="281.94299"
    inkscape:window-width="1280"
    inkscape:window-height="731"
@@ -315,7 +315,8 @@
    fill="#0000ff"
    stroke="none"
    d="M 3153,6275 V 20230 H 17113 V 6275 Z"
-   id="path18" />
+   id="path18"
+   style="fill:#005098;fill-opacity:1" />
          <path
    fill="none"
    stroke="#1b1918"
@@ -364,7 +365,8 @@
    fill="#0000ff"
    stroke="none"
    d="m 8042,10138 2706,-3 c 973,0 1511,765 1494,1668 -18,902 -521,1664 -1494,1664 H 8042 Z"
-   id="path21" />
+   id="path21"
+   style="fill:#005098;fill-opacity:1" />
         </g>
        </g>
       </g>

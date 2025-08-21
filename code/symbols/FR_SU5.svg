@@ -32,7 +32,7 @@
    fit-margin-bottom="50"
    showgrid="false"
    inkscape:zoom="2.2926552"
-   inkscape:cx="103.37359"
+   inkscape:cx="102.71933"
    inkscape:cy="105.99064"
    inkscape:window-width="1280"
    inkscape:window-height="731"
@@ -217,7 +217,8 @@
    fill="#0000ff"
    stroke="none"
    d="m 5866,11873 h 9751 V 8372 H 5866 Z"
-   id="path14" />
+   id="path14"
+   style="fill:#005098;fill-opacity:1" />
         </g>
        </g>
        <g
