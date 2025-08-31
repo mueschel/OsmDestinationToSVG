@@ -928,70 +928,102 @@ sub getArrow {
     $height = 20;
     }
   
-  my $col = getArrowColor($lane,$entry,'main','arrow');
+  my @col;
+  $col[0] = getArrowColor($lane,$entry,'main','arrow');
   
   if(defined $type && $type eq 'arrow') {
     $height = 0;
     my $deg = $conf->{$d}{arrowtag}[$lane][$entry];
     return "" unless defined $deg;
     return "" if checkRepeatedArrow($lane,"",$entry);
-    $col = getArrowColor($lane,$entry,'','front');
-    $o .= '<use href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col.';"/>'."\n";
+    $col[0] = getArrowColor($lane,$entry,'','front');
+    $o .= '<use href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col[0].';"/>'."\n";
     }
   elsif(defined $type && $type eq 'arrowto') {
     $height = 0;
     my $deg = $conf->{$d}{'arrowtag:to'}[$lane][$entry];
     return "" unless defined $deg;
     return "" if checkRepeatedArrow($lane,":to",$entry);
-    $col = getArrowColor($lane,$entry,':to','front');
-
-    $o .= '<use href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col.';"/>'."\n";
+    $col[0] = getArrowColor($lane,$entry,':to','front');
+    $o .= '<use href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col[0].';"/>'."\n";
     }  
-  elsif ($conf->{$d}{arrowpos}[$lane] eq 'left') {  
-    my $deg = $conf->{$d}{arrows}[$lane][0];
-    $o .= '<use href="#arrow" transform="translate(20 '.$height.') rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>'."\n";
-    }
-  elsif ($conf->{$d}{arrowpos}[$lane] eq 'right') {
-    my $deg = $conf->{$d}{arrows}[$lane][0];
-    $o .= '<use href="#arrow" transform="translate('.($SIGNWIDTH-20).' '.$height.') rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>'."\n";    
-    }
-  elsif ($conf->{$d}{arrowpos}[$lane] eq 'center') {
-#     $height = 2+$conf->{$d}{maxentries}*20;
-    if ($conf->{$d}{splitlane}[$lane]) {
+#   elsif ($conf->{$d}{splitlane}[$lane]) {
+#
+#
+#       my @col;
+# #       $col[0] = getBackground($lane-1,$entry,'main','front');
+# #       $col[1] = getBackground($lane+1,$entry,'main','front');
+#
+#       my $i = 0;
+#       my $offset = -15*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
+#       foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
+#         next if $deg eq 'none';
+#         $o .= '<use href="#arrow" transform="translate('.($SIGNWIDTH/8+$offset).' %ARROWPOS%) rotate('.$deg.' 0 0)" style="stroke:'.$col[$i++].';"/>'."\n";
+#         $offset += 30;
+#         }
+#       }
+  else {
+    my $offset = -20*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
+    my $offsetstep = 40;
+    my $mergearrows = scalar @{$conf->{$d}{arrows}[$lane]}>1 ? 1 : 0;
 
-      #If I'm a split lane, and (the lane on the right if 3, has arrowpos=none, then remove 2nd arrow) 
-      #                         (the lane on the left if 2, has arrowpos=none, then remove 1st arrow) 
+    my $tx; my $ty;
+    if ($conf->{$d}{arrowpos}[$lane] eq 'left')  {  $tx = 20;              $ty = $height;}
+    if ($conf->{$d}{arrowpos}[$lane] eq 'right') {  $tx = $SIGNWIDTH-20;   $ty = $height;}
+    if ($conf->{$d}{arrowpos}[$lane] eq 'center'){  $tx = $SIGNWIDTH/2;    $ty = '%ARROWPOS%';}
+    if ($conf->{$d}{splitlane}[$lane])           {  $tx = $SIGNWIDTH/8;    $ty = '%ARROWPOS%';}
+
+    if ($conf->{$d}{splitlane}[$lane]) {
+      #If I'm a split lane, and (the lane on the right if 3, has arrowpos=none, then remove 2nd arrow)
+      #                         (the lane on the left if 2, has arrowpos=none, then remove 1st arrow)
       if ($conf->{$d}{splitlane}[$lane]==3 && $conf->{$d}{arrowpos}[$lane+1] eq 'none') {
         $conf->{$d}{arrows}[$lane][-1] = 'none';
         }
       if ($conf->{$d}{splitlane}[$lane]==2 && $conf->{$d}{arrowpos}[$lane-1] eq 'none') {
         $conf->{$d}{arrows}[$lane][0] = 'none';
         }
-      
-      my @col;
-#       $col[0] = getBackground($lane-1,$entry,'main','front');
-#       $col[1] = getBackground($lane+1,$entry,'main','front');
+
+      $offset = -10*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
+      $offsetstep = 20;
+
       $col[0] = getArrowColor($lane-1,$entry,'main','arrow');
       $col[1] = getArrowColor($lane+1,$entry,'main','arrow');
+
+      if($col[0] ne $col[1]) { $mergearrows = 0;}
+
+      }
+
+    my $deg = $conf->{$d}{arrows}[$lane][0];
+    if($mergearrows && $conf->{$d}{arrows}[$lane][0] == 270 && $conf->{$d}{arrows}[$lane][1] == -360) {
+      $tx -= 12 if $conf->{$d}{splitlane}[$lane];
+      $o .= '<use href="#arrow_tr" transform="translate('.$tx.' '.$ty.')" style="stroke:'.$col[0].';"/>'."\n";
+      }
+    elsif($mergearrows && $conf->{$d}{arrows}[$lane][0] == 180 && $conf->{$d}{arrows}[$lane][1] == 270) {
+      $tx += 12 if $conf->{$d}{splitlane}[$lane];
+      $o .= '<use href="#arrow_tr" transform="translate('.$tx.' '.$ty.') scale(-1,1) " style="stroke:'.$col[0].';"/>'."\n";
+      }
+    elsif($mergearrows && $conf->{$d}{arrows}[$lane][0] == 270 && $conf->{$d}{arrows}[$lane][1] == -45) {
+      $tx -= 12 if $conf->{$d}{splitlane}[$lane];
+      $o .= '<use href="#arrow_tsr" transform="translate('.$tx.' '.$ty.')" style="stroke:'.$col[0].';"/>'."\n";
+      }
+    elsif($mergearrows && $conf->{$d}{arrows}[$lane][0] == 225 && $conf->{$d}{arrows}[$lane][1] == 270) {
+      $tx += 12 if $conf->{$d}{splitlane}[$lane];
+      $o .= '<use href="#arrow_tsr" transform="translate('.$tx.' '.$ty.') scale(-1,1) " style="stroke:'.$col[0].';"/>'."\n";
+      }
+    else {
       my $i = 0;
-      my $offset = -15*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
       foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
-        next if $deg eq 'none';
-        $o .= '<use href="#arrow" transform="translate('.($SIGNWIDTH/8+$offset).' %ARROWPOS%) rotate('.$deg.' 0 0)" style="stroke:'.$col[$i++].';"/>'."\n";
-        $offset += 30;
+        $o .= '<use href="#arrow" transform="translate('.($tx+$offset).' '.$ty.') rotate('.$deg.' 0 0)" style="stroke:'.$col[$i].';"/>'."\n";
+        $i += 1-$mergearrows; #count only with unmerged arrows
+        $offset += $offsetstep;
         }
       }
-    else {  
-      my $offset = -20*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
-      foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
-        $o .= '<use href="#arrow" transform="translate('.($SIGNWIDTH/2+$offset).' %ARROWPOS%) rotate('.$deg.' 0 0)" style="stroke:'.$col.';"/>'."\n";
-        $offset += 40;
-        }
-      }  
     }
 
   return $o;
   }
+#       $error .= Dumper @{$conf->{$d}{arrows}[$lane]};
+
 
 #################################################
 ## Define arrows per lane and positions

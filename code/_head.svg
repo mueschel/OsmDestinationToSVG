@@ -103,16 +103,33 @@ viewBox="-1 -1  %IMAGEWIDTH%  %IMAGEHEIGHT%"
 
 
 <def>
-  
   <g id="arrow" >
     <path
        d="m -10,0 h 20"
        style="fill:none;fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
-        d="m 10,0 -8,6"
+        d="m 10,0 -6,6"
        style="fill:none;fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
-       d="m 10,0 -8,-6"
+       d="m 10,0 -6,-6"
        style="fill:none;fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  </g>
+
+  <g id="arrow_tr" >
+  <path d="M -4,-10 v20" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path d="M -10,-4 L -4,-10" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path d="M 2,-4 L -4,-10" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path d="M -4,4 L 10,4" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path d="M 5,-1 L 10,4" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path d="M 5,9 L 10,4" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  </g>
+
+  <g id="arrow_tsr" >
+  <path d="M -4,-10 v20" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path d="M -10,-4 L -4,-10" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path d="M 2,-4 L -4,-10" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path d="M -4,9 L 9,2" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path d="M 4,-1 L 9,2" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+  <path d="M 8.2,7.8 L 9,2" style="fill-rule:evenodd;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
   </g>
 </def>  
