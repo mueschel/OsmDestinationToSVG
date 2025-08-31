@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.2"
+   width="150.49001mm"
+   height="150.47mm"
+   viewBox="0 0 15049.001 15047"
+   preserveAspectRatio="xMidYMid"
+   fill-rule="evenodd"
+   stroke-width="28.222"
+   stroke-linejoin="round"
+   xml:space="preserve"
+   id="svg31"
+   sodipodi:docname="FR_ID32.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:ooo="http://xml.openoffice.org/svg/export"><sodipodi:namedview
+   id="namedview31"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="true"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:document-units="mm"
+   fit-margin-top="50"
+   fit-margin-left="50"
+   fit-margin-right="50"
+   fit-margin-bottom="50"
+   showgrid="false"
+   inkscape:zoom="1.2013817"
+   inkscape:cx="253.04198"
+   inkscape:cy="435.3321"
+   inkscape:window-width="1280"
+   inkscape:window-height="731"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="svg31" />
+ <defs
+   class="ClipPathGroup"
+   id="defs2">
+  <clipPath
+   id="presentation_clip_path"
+   clipPathUnits="userSpaceOnUse">
+   <rect
+   x="0"
+   y="0"
+   width="21001"
+   height="29703"
+   id="rect1" />
+  </clipPath>
+  <clipPath
+   id="presentation_clip_path_shrink"
+   clipPathUnits="userSpaceOnUse">
+   <rect
+   x="21"
+   y="29"
+   width="20959"
+   height="29644"
+   id="rect2" />
+  </clipPath>
+ </defs>
+ <defs
+   class="TextShapeIndex"
+   id="defs3">
+  <g
+   ooo:slide="id1"
+   ooo:id-list="id3 id4 id5 id6 id7 id8 id9 id10 id11 id12 id13 id14"
+   id="g2" />
+ </defs>
+ <defs
+   class="EmbeddedBulletChars"
+   id="defs12">
+  <g
+   id="bullet-char-template-57356"
+   transform="matrix(4.8828125e-4,0,0,-4.8828125e-4,0,0)">
+   <path
+   d="M 580,1141 1163,571 580,0 -4,571 Z"
+   id="path3" />
+  </g>
+  <g
+   id="bullet-char-template-57354"
+   transform="matrix(4.8828125e-4,0,0,-4.8828125e-4,0,0)">
+   <path
+   d="M 8,1128 H 1137 V 0 H 8 Z"
+   id="path4" />
+  </g>
+  <g
+   id="bullet-char-template-10146"
+   transform="matrix(4.8828125e-4,0,0,-4.8828125e-4,0,0)">
+   <path
+   d="M 174,0 602,739 174,1481 1456,739 Z M 1358,739 309,1346 659,739 Z"
+   id="path5" />
+  </g>
+  <g
+   id="bullet-char-template-10132"
+   transform="matrix(4.8828125e-4,0,0,-4.8828125e-4,0,0)">
+   <path
+   d="M 2015,739 1276,0 H 717 l 543,543 H 174 v 393 h 1086 l -543,545 h 557 z"
+   id="path6" />
+  </g>
+  <g
+   id="bullet-char-template-10007"
+   transform="matrix(4.8828125e-4,0,0,-4.8828125e-4,0,0)">
+   <path
+   d="m 0,-2 c -7,16 -16,29 -25,39 l 381,530 c -94,256 -141,385 -141,387 0,25 13,38 40,38 9,0 21,-2 34,-5 21,4 42,12 65,25 l 27,-13 111,-251 280,301 64,-25 24,25 c 21,-10 41,-24 62,-43 C 886,937 835,863 770,784 769,783 710,716 594,584 L 774,223 c 0,-27 -21,-55 -63,-84 l 16,-20 C 717,90 699,76 672,76 641,76 570,178 457,381 L 164,-76 c -22,-34 -53,-51 -92,-51 -42,0 -63,17 -64,51 -7,9 -10,24 -10,44 0,9 1,19 2,30 z"
+   id="path7" />
+  </g>
+  <g
+   id="bullet-char-template-10004"
+   transform="matrix(4.8828125e-4,0,0,-4.8828125e-4,0,0)">
+   <path
+   d="M 285,-33 C 182,-33 111,30 74,156 52,228 41,333 41,471 c 0,78 14,145 41,201 34,71 87,106 158,106 53,0 88,-31 106,-94 l 23,-176 c 8,-64 28,-97 59,-98 l 735,706 c 11,11 33,17 66,17 42,0 63,-15 63,-46 V 965 c 0,-36 -10,-64 -30,-84 L 442,47 C 390,-6 338,-33 285,-33 Z"
+   id="path8" />
+  </g>
+  <g
+   id="bullet-char-template-9679"
+   transform="matrix(4.8828125e-4,0,0,-4.8828125e-4,0,0)">
+   <path
+   d="M 813,0 C 632,0 489,54 383,161 276,268 223,411 223,592 c 0,181 53,324 160,431 106,107 249,161 430,161 179,0 323,-54 432,-161 108,-107 162,-251 162,-431 0,-180 -54,-324 -162,-431 C 1136,54 992,0 813,0 Z"
+   id="path9" />
+  </g>
+  <g
+   id="bullet-char-template-8226"
+   transform="matrix(4.8828125e-4,0,0,-4.8828125e-4,0,0)">
+   <path
+   d="m 346,457 c -73,0 -137,26 -191,78 -54,51 -81,114 -81,188 0,73 27,136 81,188 54,52 118,78 191,78 73,0 134,-26 185,-79 51,-51 77,-114 77,-187 0,-75 -25,-137 -76,-188 -50,-52 -112,-78 -186,-78 z"
+   id="path10" />
+  </g>
+  <g
+   id="bullet-char-template-8211"
+   transform="matrix(4.8828125e-4,0,0,-4.8828125e-4,0,0)">
+   <path
+   d="M -4,459 H 1135 V 606 H -4 Z"
+   id="path11" />
+  </g>
+  <g
+   id="bullet-char-template-61548"
+   transform="matrix(4.8828125e-4,0,0,-4.8828125e-4,0,0)">
+   <path
+   d="m 173,740 c 0,163 58,303 173,419 116,115 255,173 419,173 163,0 302,-58 418,-173 116,-116 174,-256 174,-419 0,-163 -58,-303 -174,-418 C 1067,206 928,148 765,148 601,148 462,206 346,322 231,437 173,577 173,740 Z"
+   id="path12" />
+  </g>
+ </defs>
+ <g
+   id="g12"
+   transform="translate(-2628,-5745)">
+  <g
+   id="id2"
+   class="Master_Slide">
+   <g
+   id="bg-id2"
+   class="Background" />
+   <g
+   id="bo-id2"
+   class="BackgroundObjects" />
+  </g>
+ </g>
+ <g
+   class="SlideGroup"
+   id="g31"
+   transform="translate(-2628,-5745)">
+  <g
+   id="g30">
+   <g
+   id="container-id1">
+    <g
+   id="id1"
+   class="Slide"
+   clip-path="url(#presentation_clip_path)">
+     <g
+   class="Page"
+   id="g29">
+      <g
+   class="Group"
+   id="g28">
+       <g
+   class="com.sun.star.drawing.PolyPolygonShape"
+   id="g13"
+   transform="matrix(1.0033336,0,0,1.003334,-34.84755,-44.237323)">
+        <g
+   id="id3">
+         <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="2654"
+   y="5770"
+   width="14999"
+   height="14997"
+   id="rect12" />
+         <path
+   fill="#fefefe"
+   stroke="none"
+   d="M 17651,20766 V 5771 H 2654 v 14995 z"
+   id="path13" />
+        </g>
+       </g>
+       <g
+   class="com.sun.star.drawing.PolyPolygonShape"
+   id="g14">
+        <g
+   id="id4">
+         <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="3155"
+   y="6271"
+   width="13998"
+   height="13992"
+   id="rect13" />
+         <path
+   fill="#000000"
+   stroke="none"
+   d="M 3155,6271 V 20262 H 17151 V 6271 Z"
+   id="path14" />
+        </g>
+       </g>
+       <g
+   class="com.sun.star.drawing.PolyPolygonShape"
+   id="g15">
+        <g
+   id="id5">
+         <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="4152"
+   y="7269"
+   width="12002"
+   height="11996"
+   id="rect14" />
+         <path
+   fill="#fefefe"
+   stroke="none"
+   d="M 4153,7269 V 19264 H 16153 V 7269 Z"
+   id="path15" />
+        </g>
+       </g>
+       <g
+   class="Group"
+   id="g20"
+   style="display:none">
+        <g
+   class="com.sun.star.drawing.LineShape"
+   id="g16">
+         <g
+   id="id6">
+          <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="2628"
+   y="5771"
+   width="53"
+   height="14994"
+   id="rect15" />
+          <path
+   fill="none"
+   stroke="#1b1918"
+   stroke-width="51"
+   stroke-linejoin="miter"
+   d="M 2654,20764 V 5771"
+   id="path16" />
+         </g>
+        </g>
+        <g
+   class="com.sun.star.drawing.LineShape"
+   id="g17">
+         <g
+   id="id7">
+          <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="2654"
+   y="20739"
+   width="14997"
+   height="53"
+   id="rect16" />
+          <path
+   fill="none"
+   stroke="#1b1918"
+   stroke-width="51"
+   stroke-linejoin="miter"
+   d="M 17650,20765 H 2654"
+   id="path17" />
+         </g>
+        </g>
+        <g
+   class="com.sun.star.drawing.LineShape"
+   id="g18">
+         <g
+   id="id8">
+          <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="17624"
+   y="5771"
+   width="53"
+   height="14994"
+   id="rect17" />
+          <path
+   fill="none"
+   stroke="#1b1918"
+   stroke-width="51"
+   stroke-linejoin="miter"
+   d="M 17650,5771 V 20764"
+   id="path18" />
+         </g>
+        </g>
+        <g
+   class="com.sun.star.drawing.LineShape"
+   id="g19">
+         <g
+   id="id9">
+          <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="2654"
+   y="5745"
+   width="14997"
+   height="53"
+   id="rect18" />
+          <path
+   fill="none"
+   stroke="#1b1918"
+   stroke-width="51"
+   stroke-linejoin="miter"
+   d="M 2654,5771 H 17650"
+   id="path19" />
+         </g>
+        </g>
+       </g>
+       <g
+   class="Group"
+   id="g27">
+        <g
+   class="com.sun.star.drawing.PolyPolygonShape"
+   id="g21">
+         <g
+   id="id10">
+          <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="5206"
+   y="13147"
+   width="9560"
+   height="5519"
+   id="rect20" />
+          <path
+   fill="#000000"
+   stroke="none"
+   d="m 5208,14449 8980,-1300 575,4214 -8981,1300 z"
+   id="path20" />
+          <path
+   fill="none"
+   stroke="#1b1918"
+   stroke-width="3"
+   stroke-linejoin="miter"
+   d="m 5208,14449 8980,-1300 575,4214 -8981,1300 z"
+   id="path21" />
+         </g>
+        </g>
+        <g
+   class="com.sun.star.drawing.PolyPolygonShape"
+   id="g23">
+         <g
+   id="id11">
+          <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="5375"
+   y="13332"
+   width="9217"
+   height="5158"
+   id="rect21" />
+          <path
+   fill="#fefefe"
+   stroke="none"
+   d="m 5377,14590 8681,-1256 531,3897 -8681,1256 z"
+   id="path22" />
+          <path
+   fill="none"
+   stroke="#1b1918"
+   stroke-width="3"
+   stroke-linejoin="miter"
+   d="m 5377,14590 8681,-1256 531,3897 -8681,1256 z"
+   id="path23" />
+         </g>
+        </g>
+        <g
+   class="com.sun.star.drawing.ClosedBezierShape"
+   id="g24"
+   transform="rotate(-10,5370.3138,16703.302)">
+         <g
+   id="id12">
+          <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="11634"
+   y="15640"
+   width="1830"
+   height="2577"
+   id="rect23" />
+          <path
+   fill="#000000"
+   stroke="none"
+   d="m 13463,15744 -97,471 c -93,-96 -231,-146 -409,-146 -182,0 -328,66 -438,200 -64,75 -109,166 -133,279 h 907 l -53,262 h -887 c 0,25 -4,63 -4,100 0,43 4,85 4,126 h 843 l -53,267 h -753 c 24,121 69,213 125,283 110,134 256,200 430,200 210,0 380,-66 505,-200 v 521 c -141,71 -311,109 -497,109 -324,0 -587,-113 -798,-338 -137,-154 -230,-346 -279,-575 h -242 l 52,-267 h 162 c 0,-25 0,-54 0,-87 0,-51 0,-97 4,-139 h -218 l 52,-262 h 198 c 45,-225 138,-413 275,-567 207,-229 483,-341 822,-341 182,0 344,33 482,104 z"
+   id="path24" />
+         </g>
+        </g>
+        <g
+   class="com.sun.star.drawing.ClosedBezierShape"
+   id="g25"
+   transform="translate(0,-539.99985)">
+         <g
+   id="id13">
+          <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="6634"
+   y="15312"
+   width="4344"
+   height="2736"
+   id="rect24" />
+          <path
+   fill="#000000"
+   stroke="none"
+   d="m 7702,16453 c 11,-17 20,-33 28,-48 7,-15 13,-29 17,-41 3,-16 6,-32 7,-47 2,-17 2,-32 0,-48 -4,-27 -9,-52 -16,-73 -7,-22 -16,-42 -25,-59 -11,-19 -22,-36 -36,-51 -13,-14 -28,-27 -45,-38 -14,-10 -32,-20 -52,-29 -20,-8 -41,-14 -62,-18 -22,-5 -44,-9 -69,-12 -25,-1 -51,-2 -77,0 -46,4 -87,14 -122,29 -35,15 -64,35 -86,61 -21,25 -38,55 -50,92 -12,36 -17,76 -14,121 l -463,33 c -3,-53 -2,-105 1,-156 4,-52 13,-100 25,-146 12,-49 29,-95 49,-137 21,-43 45,-82 72,-117 29,-36 62,-69 98,-100 36,-31 77,-57 121,-78 46,-23 95,-41 148,-56 53,-14 109,-24 169,-28 29,-2 59,-3 88,-2 30,1 58,3 85,7 29,4 57,9 84,15 28,6 54,13 79,21 26,8 52,17 77,28 25,11 48,24 69,38 22,12 44,26 65,41 21,15 41,31 60,47 19,17 38,34 57,51 18,17 35,35 51,54 16,18 31,38 45,58 14,21 27,43 37,65 13,21 24,43 35,67 11,23 19,45 26,68 7,24 14,48 20,73 6,25 11,49 14,72 3,18 5,35 6,52 2,16 4,32 6,48 0,16 0,31 -1,47 -1,15 -2,32 -4,47 0,14 -1,29 -5,45 -3,16 -6,32 -10,48 -4,14 -8,29 -14,45 -5,16 -11,32 -18,48 -6,15 -14,30 -23,48 -10,17 -20,34 -29,50 -9,17 -20,34 -32,54 -13,19 -25,39 -37,57 -13,19 -27,38 -42,59 -15,21 -31,43 -49,65 -16,21 -34,45 -54,71 -20,26 -41,51 -61,76 l -352,450 956,-68 66,479 -1632,115 -66,-478 z m 0,0 z m 2208,-1139 c 73,-4 142,-2 207,6 66,10 128,27 186,52 56,26 111,57 162,96 52,39 99,83 141,133 43,50 83,107 120,171 38,64 70,133 97,208 28,76 52,157 73,244 22,86 39,178 53,275 13,96 21,188 25,277 4,89 4,172 -1,249 -6,77 -18,150 -35,218 -17,68 -38,130 -65,185 -28,55 -62,105 -102,150 -40,45 -85,84 -133,117 -50,31 -107,56 -172,75 -65,20 -134,32 -209,37 -77,6 -148,4 -216,-5 -67,-9 -128,-24 -184,-46 -58,-23 -113,-53 -164,-88 -51,-36 -98,-78 -141,-126 -42,-50 -82,-107 -117,-171 -35,-65 -66,-135 -94,-210 -28,-76 -52,-160 -73,-251 -21,-90 -39,-188 -53,-291 -29,-208 -36,-391 -22,-549 14,-159 50,-291 106,-397 57,-110 136,-195 239,-254 102,-59 226,-94 372,-105 z m 0,0 z m 66,476 c -39,3 -75,9 -107,18 -32,9 -59,21 -81,36 -24,16 -46,36 -64,61 -18,25 -32,53 -40,85 -12,31 -20,68 -25,109 -6,42 -8,87 -7,136 1,49 4,103 9,163 4,60 11,123 20,191 9,67 19,129 29,188 10,59 21,113 34,161 12,49 26,93 44,133 16,40 35,75 54,105 19,28 40,53 65,75 25,22 52,40 80,53 26,12 56,21 91,26 35,5 72,7 111,4 40,-3 75,-10 106,-21 32,-11 59,-26 83,-46 22,-19 42,-42 60,-70 17,-28 32,-58 43,-90 10,-36 17,-75 23,-117 6,-41 8,-86 7,-132 -1,-47 -3,-99 -7,-155 -4,-55 -10,-112 -18,-171 -9,-60 -17,-117 -28,-172 -10,-54 -22,-104 -34,-150 -11,-47 -27,-90 -44,-131 -19,-41 -36,-77 -53,-108 -20,-32 -43,-60 -69,-83 -26,-24 -52,-44 -79,-59 -28,-16 -59,-27 -94,-33 -33,-7 -70,-9 -109,-6 z"
+   id="path25" />
+         </g>
+        </g>
+        <g
+   class="com.sun.star.drawing.ClosedBezierShape"
+   id="g26">
+         <g
+   id="id14">
+          <rect
+   class="BoundingBox"
+   stroke="none"
+   fill="none"
+   x="6497"
+   y="7839"
+   width="7300"
+   height="6383"
+   id="rect25" />
+          <path
+   fill="#000000"
+   stroke="none"
+   d="m 6752,7839 h 6789 c 140,0 255,114 255,254 v 4114 c 0,140 -115,254 -255,254 H 6752 c -140,0 -254,-114 -254,-254 V 8093 c 0,-140 114,-254 254,-254 z m 0,0 z m 3414,2118 c -14,-740 -347,-881 -1375,-888 -1029,-7 -1499,74 -1492,1076 7,1002 255,1096 1465,1102 1209,7 1408,-235 1425,-1034 H 8757 v -256 z m 0,0 z m 139,-890 h 2355 c 477,0 487,888 0,888 h -2355 z m 0,0 z m -3,1150 h 2362 c 500,0 477,1012 0,1022 h -2362 z m 0,0 z m -157,4004 1125,-1130 H 9021 Z"
+   id="path26" />
+         </g>
+        </g>
+       </g>
+      </g>
+     </g>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>
