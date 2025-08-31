@@ -21,10 +21,10 @@ my $q = CGI->new;
 my $data = $q->param('POSTDATA');
 my $out;
 my $store; #processed tags
-my $conf;  #calculated data like number of lanes
+our $conf;  #calculated data like number of lanes
 my $image;
-my $topimage;
-my $error = "";
+my $topimage = "";
+our $error = "";
 # $image = "Content-Type: image/svg+xml; charset=utf-8\r\n".
 #          "Access-Control-Allow-Origin: *\r\n\r\n";
 $image = "Content-Type: text/text; charset=utf-8\r\n".
@@ -39,6 +39,10 @@ unless($data) {
   print "No valid data received\n\n\n";
   exit 1;
   }
+
+
+require "./colorcodes.pl";
+
 #################################################
 ## Process data
 #################################################  
@@ -126,8 +130,9 @@ my @bottom  = (0,0,0,0,0,0,0,0,0,0);
 @pinline  = ( 0,        0,   0,     0,       0)    if($conf->{country} eq 'SR');
 @bottom   = ( 0,        1,   0,     0,       1)    if($conf->{country} eq 'SR');
 
-my $allowstack = 0;  
-  
+my $allowstack = 0;
+
+
 #################################################
 ## Process data
 #################################################    
@@ -232,9 +237,17 @@ foreach my $d (@showdirections) {
               $image .= makeRef($pos,0,$tmp);
               $pos += 38;
               }
-          
-            $image .= drawText($lane,$i,':to',$pos);
+            if ($conf->{$d}{orderedrefto}[$lane]  &&  $l->{'destination:int_ref:to'} && ($tmp = $l->{'destination:int_ref:to'}[$i])) {
+              $image .= makeRef($pos,0,$tmp);
+              $pos += 38;
+              }
 
+            $image .= drawText($lane,$i,':to',$pos);
+            if($l->{'destination:distance:to'}) {
+              if (existEntryI($l,'destination:distance:to',$i)) {
+                $image .= drawDistance($lane,$i,':to',$pos);
+                }
+              }
             $image .= "</g>\n";  
             $entrypos+=20;
             $pos = 0;
@@ -293,7 +306,11 @@ foreach my $d (@showdirections) {
               $pos += 38;
               }           
             $image .= drawText($lane,$i,'',$pos);
-            
+            if($l->{'destination:distance'}) {
+              if (existEntryI($l,'destination:distance',$i)) {
+                $image .= drawDistance($lane,$i,'',$pos);
+                }
+              }
             $image .= "</g>\n";  
             $entrypos+=20;
             $pos = 0;           
@@ -392,6 +409,37 @@ foreach my $d (@showdirections) {
   $lanecounter += .1;  
   }
 
+#################################################
+## Finish image output
+#################################################
+# $hasarrows *= $hasbottomline;
+# $error .= $hasarrows.$hasbottomline;
+$hasbottomline = 0 if $hasarrows;
+my $imgheight  = $sizes->{currenty}+20+$hasarrows*30+$hasbottomline*20;
+my $imgwidth   = $lanecounter*$SIGNWIDTH+10;
+my $signheight = $sizes->{maxheight}+19+$hasarrows*40+$hasbottomline*20;
+my $bottomline = $sizes->{maxheight};#-20+$hasarrows*30;
+my $arrowpos   = $sizes->{maxheight}+$hasarrows*40; #+$hasbottomline*10;
+
+$image .= "$topimage</svg>\n";
+$image =~ s/%IMAGEWIDTH%/$imgwidth/g;
+$image =~ s/%IMAGEHEIGHT%/$imgheight/g;
+$image =~ s/%SIGNHEIGHT%/$signheight/g;
+$image =~ s/%BOTTOMLINE%/$bottomline/g;
+$image =~ s/%ARROWPOS%/$arrowpos/g;
+
+print encode('utf-8',$image);
+
+# $error .= Dumper $conf;
+# $error .= Dumper $store;
+print '<pre>';
+print encode('utf-8',$error);
+print '</pre>';
+
+
+
+
+
 sub drawDivider {
   my $pos = shift @_ // 0;
   my $lane = shift @_ // 0;
@@ -407,17 +455,6 @@ sub drawDivider {
 sub duplicateTags {
   foreach my $d (@showdirections) {
     
-#Treat all colour identical as if there is just a single one      
-    foreach my $l (0..$conf->{$d}{totallanes}-1) {
-      foreach my $ta (qw(destination:colour colour:back colour:text)) {
-        if($store->{$d}[$l]{$ta} && (scalar @{$store->{$d}[$l]{$ta}}) >= 1) {
-          if (allsame(@{$store->{$d}[$l]{$ta}})) {
-            @{$store->{$d}[$l]{$ta}} = ($store->{$d}[$l]{$ta}[0]);
-            }
-          }
-        }
-      }
-
 #if all arrows are identical, then push to turn      
     foreach my $l (0..$conf->{$d}{totallanes}-1) {        
       if($store->{$d}[$l]{'destination:arrow'}) {
@@ -437,12 +474,33 @@ sub duplicateTags {
       if($store->{$d}[$l]{'destination:colour:back'}) {
         $store->{$d}[$l]{'destination:colour'} = $store->{$d}[$l]{'destination:colour:back'};
         }
+      if($store->{$d}[$l]{'colour:back'}) {
+        $store->{$d}[$l]{'destination:colour'} = $store->{$d}[$l]{'colour:back'};
+        }
       if($store->{$d}[$l]{'colour:ref'}) {
         $store->{$d}[$l]{'destination:colour:ref'} = $store->{$d}[$l]{'colour:ref'};
         }
+      if($store->{$d}[$l]{'destination:colour:back:to'}) {
+        $store->{$d}[$l]{'destination:colour:to'} = $store->{$d}[$l]{'destination:colour:back:to'};
+        }
+      if($store->{$d}[$l]{'colour:ref:to'}) {
+        $store->{$d}[$l]{'destination:colour:ref:to'} = $store->{$d}[$l]{'colour:ref:to'};
+        }
       }
       
-      
+#Treat all colour identical as if there is just a single one
+    foreach my $l (0..$conf->{$d}{totallanes}-1) {
+      next if $conf->{country} eq 'GR'; #keep blue background on all white signs
+      foreach my $ta (qw(destination:colour destination:colour:to colour:back colour:text)) {
+        if($store->{$d}[$l]{$ta} && (scalar @{$store->{$d}[$l]{$ta}}) >= 1) {
+          if (allsame(@{$store->{$d}[$l]{$ta}})) {
+            @{$store->{$d}[$l]{$ta}} = ($store->{$d}[$l]{$ta}[0]);
+            }
+          }
+        }
+      }
+
+
     next if $conf->{$d}{totallanes} == 1;
     foreach my $t (keys %{$store->{$d}[0]}) {
       next if($store->{$d}[1]{$t});
@@ -486,33 +544,6 @@ sub allsameorempty {
   return 1;  
   }
   
-#################################################
-## Finish image output
-#################################################    
-# $hasarrows *= $hasbottomline;
-# $error .= $hasarrows.$hasbottomline;
-$hasbottomline = 0 if $hasarrows;
-my $imgheight  = $sizes->{currenty}+20+$hasarrows*30+$hasbottomline*20;
-my $imgwidth   = $lanecounter*$SIGNWIDTH+10;
-my $signheight = $sizes->{maxheight}+19+$hasarrows*40+$hasbottomline*20;
-my $bottomline = $sizes->{maxheight};#-20+$hasarrows*30;
-my $arrowpos   = $sizes->{maxheight}+$hasarrows*40; #+$hasbottomline*10;
-
-$image .= "$topimage</svg>\n";
-$image =~ s/%IMAGEWIDTH%/$imgwidth/g;
-$image =~ s/%IMAGEHEIGHT%/$imgheight/g;
-$image =~ s/%SIGNHEIGHT%/$signheight/g;
-$image =~ s/%BOTTOMLINE%/$bottomline/g;
-$image =~ s/%ARROWPOS%/$arrowpos/g;
-
-print encode('utf-8',$image);
-
-# $error .= Dumper $conf;
-# $error .= Dumper $store;
-print '<pre>';
-print encode('utf-8',$error);
-print '</pre>';
-
 
 
 #################################################
@@ -584,11 +615,16 @@ sub calcNumbers {
           my $cnt = scalar @{$lane->{$tag}};
           next if ($tag =~ /colour/);
           if($tag =~ /^destination.*ref.*:to/) {
-            $entries[1] = $cnt if $entries[1] < $cnt;
-            $conf->{$d}{numberrefto}[$lanenum] += $cnt;
+            if ($entries[1] < $cnt){
+              $entries[1] = $cnt;
+              $conf->{$d}{numberrefto}[$lanenum] = $cnt;
+              }
             }          
           elsif($tag =~ /^destination.*:to/) {
-            $entries[1] = $cnt if $entries[1] < $cnt;
+            if ($entries[1] < $cnt){
+              $entries[1] = $cnt;
+              $conf->{$d}{numberrefto}[$lanenum] = $cnt;
+              }
             }
           elsif($tag =~ /^destination:ref/ && $cnt) {
             $entries[2] = 1;
@@ -607,12 +643,12 @@ sub calcNumbers {
       $conf->{$d}{numberdest}[$lanenum] = $entries[0];  
       $conf->{$d}{numberdestto}[$lanenum] = $entries[1];
 
-      if( ($conf->{$d}{numberrefs}[$lanenum]    == $conf->{$d}{numberdest}[$lanenum] || $conf->{$d}{numberrefs}[$lanenum] == 0) && 
-          ($conf->{$d}{numberintrefs}[$lanenum] == $conf->{$d}{numberdest}[$lanenum] || $conf->{$d}{numberintrefs}[$lanenum] == 0) &&
-          ($conf->{$d}{numberdestto}[$lanenum] == 0 || $conf->{$d}{numberdest}[$lanenum] >= 2) &&
-          ($conf->{$d}{numberintrefs}[$lanenum] != 0 || $conf->{$d}{numberrefs}[$lanenum] != 0)
+      if( ($conf->{$d}{numberrefs}[$lanenum]    == $conf->{$d}{numberdest}[$lanenum] || $conf->{$d}{numberrefs}[$lanenum] == 0) &&      #refs = dests or no ref
+          ($conf->{$d}{numberintrefs}[$lanenum] == $conf->{$d}{numberdest}[$lanenum] || $conf->{$d}{numberintrefs}[$lanenum] == 0) &&   #and intrefs = dests or no intref
+#           ($conf->{$d}{numberdestto}[$lanenum] == 0 || $conf->{$d}{numberdest}[$lanenum] >= 2) &&                                     #and no destto or at least 2 refs
+          ($conf->{$d}{numberintrefs}[$lanenum] != 0 || $conf->{$d}{numberrefs}[$lanenum] != 0)                                         #and at least some ref/intref
       ) {
-        $conf->{$d}{numberrefs}[$lanenum] = 0;
+        $conf->{$d}{numberrefs}[$lanenum] = 0;                                     #remove ref counts, because they are ordered with dests
         $conf->{$d}{numberintrefs}[$lanenum] = 0;
         $entries[2] = 0;
         $conf->{$d}{orderedrefs}[$lanenum] = 1;
@@ -678,7 +714,6 @@ sub correctDoubleLanes {
         $conf->{$d}{filledlanes}--;
         $conf->{0}{filledlanes}--;
         $conf->{$d}{multilanes}[$lanenum-1] = 1+($conf->{$d}{multilanes}[$lanenum]);
-#TODO if turn are different, combine both. e.g. 204211276
         }
       else {
         $conf->{$d}{empty}[$lanenum] = 0;
@@ -689,6 +724,10 @@ sub correctDoubleLanes {
     }   
   }
 
+
+  #REWRITE. isFoundinNext returns position. Check all tags if they are equal in this position (or just 1 entry, skip some tags if not ordered or numbersymbols).
+  # repeat for symbol if single symbols, repeat for ref if not ordered
+  #same for all :to tags
 sub checkSplitLanes {
   foreach my $d (@showdirections) {
     for(my $lanenum = 0; $lanenum < scalar (@{$store->{$d}});$lanenum++) {
@@ -738,6 +777,9 @@ sub checkSplitLanes {
               if($store->{$d}[$lanenum]{'destination:ref:to'}) {
                 splice(@{$store->{$d}[$lanenum]{'destination:ref:to'}},$i,1);  
                 }      
+              if($store->{$d}[$lanenum]{'destination:int_ref:to'}) {
+                splice(@{$store->{$d}[$lanenum]{'destination:int_ref:to'}},$i,1);
+                }
               }
             }
           else {
@@ -780,33 +822,45 @@ sub makeRef {
   
   return if $text =~ /^\s*$/;
   if($conf->{country} eq 'DE') {
-    if ($text =~ /^\s*A[\s\d]+/) { $tcol = 'white'; $bcol = '#2568aa';}
-    if ($text =~ /^\s*B[\s\d]+/) { $tcol = 'black'; $bcol = '#f0e060';}
-    if ($text =~ /^\s*E\s+/) { $tcol = 'white'; $bcol = '#007f00';}
+    if ($text =~ /^\s*A[\s\d]+/) { $tcol = 'white'; $bcol = 'DE:blue';}
+    if ($text =~ /^\s*B[\s\d]+/) { $tcol = 'black'; $bcol = 'DE:yellow';}
+    if ($text =~ /^\s*E\s+/)     { $tcol = 'white'; $bcol = 'DE:green';}
     $text =~ s/^\s*A\s+//;
     $text =~ s/^\s*B\s+//;
     $text =~ s/\s//g;
     }
 
   if($conf->{country} eq 'AT') {
-    if ($text =~ /^\s*A[\s\d]+/) { $tcol = 'white'; $bcol = '#2568aa';}
-    if ($text =~ /^\s*B[\s\d]+/) { $tcol = 'white'; $bcol = '#2568aa';}
-    if ($text =~ /^\s*E\s*/) { $tcol = 'white'; $bcol = '#007f00';}
+    if ($text =~ /^\s*A[\s\d]+/) { $tcol = 'white'; $bcol = 'AT:blue';}
+    if ($text =~ /^\s*B[\s\d]+/) { $tcol = 'white'; $bcol = 'AT:blue';}
+    if ($text =~ /^\s*E\s*/)     { $tcol = 'white'; $bcol = 'AT:green';}
     $text =~ s/^\s*B\s*//;
     $text =~ s/\s//g;
     }        
 
   if($conf->{country} eq 'FR') {
-    if ($text =~ /^\s*[AN][\s\d]+/)  { $tcol = 'white'; $bcol = 'red';}
-    if ($text =~ /^\s*[EF][\s\d]+/)  { $tcol = 'white'; $bcol = 'green';}
-    if ($text =~ /^\s*[D][\s\d]+/)   { $tcol = 'black'; $bcol = '#f0e060';}
+    if ($text =~ /^\s*[AN][\s\d]+/)  { $tcol = 'white'; $bcol = 'FR:red';}
+    if ($text =~ /^\s*[EF][\s\d]+/)  { $tcol = 'white'; $bcol = 'FR:green';}
+    if ($text =~ /^\s*[D][\s\d]+/)   { $tcol = 'black'; $bcol = 'FR:yellow';}
     if ($text =~ /^\s*[CRP][\s\d]+/) { $tcol = 'black'; $bcol = 'white';}
-    if ($text =~ /^\s*[MT][\s\d]+/)  { $tcol = 'white'; $bcol = '#2a7fff';}
+    if ($text =~ /^\s*[MT][\s\d]+/)  { $tcol = 'white'; $bcol = 'FR:lightblue';}
     }     
+
+  if($conf->{country} eq 'GR') {
+    $tcol = 'GR:yellow'; $bcol = 'GR:blue';
+    if ($text =~ /^\s*ΕΟ[\s\d]+/) { $tcol = 'white'; $bcol = 'GR:blue';}
+    if ($text =~ /^\s*Α[\s\d]+/)  { $tcol = 'white'; $bcol = 'GR:green';}
+    if ($text =~ /^\s*[ΕE][\s\d]+/)  { $tcol = 'white'; $bcol = 'GR:green';}
+    $text =~ s/ΕΟ//g;
+    $text =~ s/E\s/E/g;
+    $text =~ s/Ε\s/Ε/g;
+    $text =~ s/^\s//g;
+    $text =~ s/\s$//g;
+    }
 
   if($conf->{country} eq 'PT') {
     $tcol = 'black'; $bcol = 'white';
-    if ($text =~ /^\s*A[\s\d]+/) { $tcol = 'white'; $bcol = '#2568aa';}
+    if ($text =~ /^\s*A[\s\d]+/) { $tcol = 'white'; $bcol = 'PT:blue';}
     if ($text =~ /^\s*N[\s\d]+/) { $tcol = 'black'; $bcol = 'white';}
     if ($text =~ /^\s*R[\s\d]+/) { $tcol = 'black'; $bcol = 'white';}
     $text =~ s/^\s//g;
@@ -814,16 +868,23 @@ sub makeRef {
     }      
     
   if($conf->{country} eq 'SR') {
-    $bcol = '#f0e060';
-    if ($text =~ /^\s*A/) { $tcol = 'white'; $bcol = '#007f00';}
-    if ($text =~ /^\s*E/) { $tcol = 'white'; $bcol = '#007f00';}
+    $bcol = 'SR:yellow';
+    if ($text =~ /^\s*A/) { $tcol = 'white'; $bcol = 'SR:green';}
+    if ($text =~ /^\s*E/) { $tcol = 'white'; $bcol = 'SR:green';}
     }
     
-  if($tags->{'destination:colour:ref'} && ($tags->{'destination:colour:ref'}[$entry] || scalar $tags->{'destination:colour:ref'} == 1)) {
-    $bcol = $tags->{'colour:ref'}[$entry] // $tags->{'destination:colour:ref'}[0];
+  if(existEntryI($tags,'destination:colour:ref',$entry))  {
+    $bcol = $tags->{'destination:colour:ref'}[$entry];
     $tcol = bestTextColor($bcol);
     }
-    
+  if(existEntryOnlyOne($tags,'destination:colour:ref'))  {
+    $bcol = $tags->{'destination:colour:ref'}[0];
+    $tcol = bestTextColor($bcol);
+    }
+
+  $bcol = getRGBColor($bcol);
+  $tcol = getRGBColor($tcol);
+
   my $o = "";
   $o .= '<g  transform="translate('.$xpos.' '.$entrypos.')" class="'.$class.'">'."\n";
   if($conf->{country} eq 'PT') {
@@ -837,7 +898,21 @@ sub makeRef {
   $o .= '</g>'."\n";
   return $o;
 }
-  
+
+sub checkRepeatedArrow {
+  my $lane  = shift @_;
+  my $type  = shift @_;
+  my $entry = shift @_ // 0;
+  my $d = $conf->{direction};
+  my $tags = $store->{$d}[$lane];
+
+  return 0 if $entry == 0;
+  return 0 if $conf->{$d}{'arrowtag'.$type}[$lane][$entry] ne $conf->{$d}{'arrowtag'.$type}[$lane][$entry-1];
+  return 0 if getArrowColor($lane,$entry,$type,'arrow') ne getArrowColor($lane,$entry-1,$type,'arrow');
+  return 1;
+  }
+
+
 #################################################
 ## Draw arrows
 #################################################     
@@ -853,22 +928,22 @@ sub getArrow {
     $height = 20;
     }
   
-  my $col = getBackground($lane,$entry,'main','front');
+  my $col = getArrowColor($lane,$entry,'main','arrow');
   
   if(defined $type && $type eq 'arrow') {
     $height = 0;
     my $deg = $conf->{$d}{arrowtag}[$lane][$entry];
-    return unless defined $deg;
-    return if ($entry > 0 && $conf->{$d}{'arrowtag'}[$lane][$entry] == $conf->{$d}{'arrowtag'}[$lane][$entry-1]);
-    $col = getBackground($lane,$entry,'','front');
+    return "" unless defined $deg;
+    return "" if checkRepeatedArrow($lane,"",$entry);
+    $col = getArrowColor($lane,$entry,'','front');
     $o .= '<use href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col.';"/>'."\n";
     }
   elsif(defined $type && $type eq 'arrowto') {
     $height = 0;
     my $deg = $conf->{$d}{'arrowtag:to'}[$lane][$entry];
-    return unless defined $deg;
-    return if ($entry > 0 && $conf->{$d}{'arrowtag:to'}[$lane][$entry] == $conf->{$d}{'arrowtag:to'}[$lane][$entry-1]);
-    $col = getBackground($lane,$entry,':to','front');
+    return "" unless defined $deg;
+    return "" if checkRepeatedArrow($lane,":to",$entry);
+    $col = getArrowColor($lane,$entry,':to','front');
 
     $o .= '<use href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col.';"/>'."\n";
     }  
@@ -894,8 +969,10 @@ sub getArrow {
         }
       
       my @col;
-      $col[0] = getBackground($lane-1,$entry,'main','front');
-      $col[1] = getBackground($lane+1,$entry,'main','front');
+#       $col[0] = getBackground($lane-1,$entry,'main','front');
+#       $col[1] = getBackground($lane+1,$entry,'main','front');
+      $col[0] = getArrowColor($lane-1,$entry,'main','arrow');
+      $col[1] = getArrowColor($lane+1,$entry,'main','arrow');
       my $i = 0;
       my $offset = -15*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
       foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
@@ -998,7 +1075,34 @@ sub calcArrows {
   return @deg;  
   }
   
-  
+#################################################
+## Get arrow colour
+#################################################
+sub getArrowColor {
+  #Lane, entry number, (':to','main',''), ('arrow');
+  my ($lane,$i,$type,$part) = @_;
+     $part //= 'back';
+     $type //= '';
+  my $d = $conf->{direction};
+  my $tags = $store->{$d}[$lane];
+
+  my $col = "";
+  $col = getBackground($lane,$i,$type,'front'); #fallback
+
+  if ($conf->{country} eq 'GR') {  #hard override for white arrows in Greece
+    $col = 'white';
+    }
+
+  if(existEntryI($tags,'destination:colour:arrow'.$type,$i)) {
+    $col = $tags->{'destination:colour:arrow'.$type}[$i];
+    }
+  if(existEntryOnlyOne($tags,'destination:colour:arrow'.$type)) {
+    $col = $tags->{'destination:colour:arrow'.$type}[0];
+    }
+  $col = getRGBColor($col);
+  return $col;
+}
+
 #################################################
 ## Get colours
 #################################################   
@@ -1011,30 +1115,23 @@ sub getBackground {
   my $d = $conf->{direction};
   my $tags = $store->{$d}[$lane];
 #Main part  
-  if($type eq 'main') {
-    if ($tags->{'destination:colour'} 
-        && (scalar @{$tags->{'destination:colour'}}) == 1
-        && $tags->{'destination:colour'}[0] ne ''
-        ) {  
-#Main background        
-      if($part eq 'back') {
-        $col = $tags->{'destination:colour'}[0];
-        }
-#Main front        
-      if ($part eq 'front') {
-        if ($tags->{'destination:colour:text'} 
-            && (scalar @{$tags->{'destination:colour:text'}}) == 1
-            && $tags->{'destination:colour:text'}[0] ne ''
-            ) {
-          $col = $tags->{'destination:colour:text'}[0];
-          }
-        elsif ($conf->{country} eq 'AT' && $tags->{'destination:colour'}[0] eq 'green') {
-          $col = 'yellow';
-          }
-        else {
-          $col = bestTextColor($tags->{'destination:colour'}[0]);
-          }
-        }
+  if($type eq 'main' || $type eq '') {
+    if($part eq 'back' && existEntryOnlyOne($tags,'destination:colour')) {
+      $col = $tags->{'destination:colour'}[0];
+      }
+    elsif ($part eq "front" && existEntryOnlyOne($tags,'destination:colour:text')) {
+      $col = $tags->{'destination:colour:text'}[0];
+      }
+    elsif ($tags->{'destination:colour:text'} && $part eq "front" && $tags->{'destination:colour'} && $conf->{country} eq 'AT'
+             && ($tags->{'destination:colour'}[$i] eq 'green' ||
+                ($tags->{'destination:colour'}[0] eq 'green' && (scalar @{$tags->{'destination:colour'}} == 1)))) {
+      $col = 'yellow';
+      }
+    elsif ($part eq "front" && existEntryOnlyOne($tags,'destination:colour')) {
+      $col = bestTextColor($tags->{'destination:colour'}[0]);
+      }
+    elsif ($part eq "front" && existEntryI($tags,'destination:colour',$i)) {
+      $col = bestTextColor($tags->{'destination:colour'}[$i]);
       }
     else {
 #Main DE    
@@ -1042,12 +1139,12 @@ sub getBackground {
         if (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^A\s/) || 
             ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^A\s/) ||
             ($store->{$d}[0]{'highway'}[0] =~ /^motorway$/)) {
-          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'DE:blue' if $part eq 'back';
           $col = 'white'   if $part eq 'front';
           }
         else {
-          $col = "#f0e060" if $part eq 'back'; 
-          $col = 'black'   if $part eq 'front';
+          $col = 'DE:yellow' if $part eq 'back';
+          $col = 'black'     if $part eq 'front';
           }
         }
 #Main AT        
@@ -1055,12 +1152,12 @@ sub getBackground {
         if (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^A/) || 
             ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^A/) ||
             ($store->{$d}[0]{'highway'}[0] =~ /^motorway/)) {
-          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'AT:blue' if $part eq 'back';
           $col = 'white'   if $part eq 'front';
           }
         else {
-          $col = "white"   if $part eq 'back'; 
-          $col = '#2568aa' if $part eq 'front';
+          $col = 'white'   if $part eq 'back';
+          $col = 'AT:blue' if $part eq 'front';
           }
         }
 #Main PT    
@@ -1068,11 +1165,11 @@ sub getBackground {
         if (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^A/) || 
 #             ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^A/) ||
             ($store->{$d}[0]{'highway'}[0] =~ /^motorway$/)) {
-          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'PT:blue' if $part eq 'back';
           $col = 'white'   if $part eq 'front';
           }
         else {
-          $col = "#ffffff" if $part eq 'back'; 
+          $col = 'white'   if $part eq 'back';
           $col = 'black'   if $part eq 'front';
           }
         }        
@@ -1081,64 +1178,99 @@ sub getBackground {
         if (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^A/) || 
             ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^A/) ||
             ($store->{$d}[0]{'highway'}[0] =~ /^motorway$/)) {
-          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'FR:blue' if $part eq 'back';
           $col = 'white'   if $part eq 'front';
           }
         else {
-          $col = "white"   if $part eq 'back'; 
+          $col = 'white'   if $part eq 'back';
           $col = 'black'   if $part eq 'front';
           }
+        }
+#Main GR
+      if ($conf->{country} eq 'GR') {
+        if (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^[AΑ]/) ||
+            ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^[AΑ]/) ||
+            ($store->{$d}[0]{'highway'}[0] =~ /^motorway$/)) {
+          $col = 'GR:green'   if $part eq 'back';
+          $col = 'GR:yellow'  if $part eq 'front';
+          }
+        else {
+#         elsif (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^ΕΟ/) ||
+#             ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^ΕΟ/)) {
+          $col = 'GR:blue'     if $part eq 'back';
+          $col = 'GR:yellow'   if $part eq 'front';
+          }
+#         else {
+#           $col = "white"     if $part eq 'back';
+#           $col = 'black'     if $part eq 'front';
+#           }
         }
 #Main SR    
       if ($conf->{country} eq 'SR') {
         if (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^A/) || 
             ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^A/) ||
             ($store->{$d}[0]{'highway'}[0] =~ /^motorway/)) {
-          $col = "#007f00" if $part eq 'back'; 
-          $col = 'white'   if $part eq 'front';
+          $col = 'SR:green' if $part eq 'back';
+          $col = 'white'    if $part eq 'front';
           }
         elsif (($store->{$d}[0]{'highway'}[0] =~ /^trunk/)) {
-          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'SR:blue' if $part eq 'back';
           $col = 'white'   if $part eq 'front';
         }
         else {
-          $col = "#f0e060" if $part eq 'back'; 
-          $col = 'black'   if $part eq 'front';
+          $col = 'SR:yellow' if $part eq 'back';
+          $col = 'black'     if $part eq 'front';
           }
         }        
       }
     }
     
-  if($type eq '' || $type eq ':to') {
-#Entry front text  
+  if($type eq '' || $type eq ':to') {    #TODO priorities are not right
+#Entry front text
     if ($part eq 'front') {
-      foreach my $ta ("colour:text","colour:$type:text","destination:colour:$type:text") {
-        if ($tags->{$ta}[$i]) {  
-          $col = $tags->{$ta}[$i];}
-        else {  
-          $col = $tags->{$ta}[0];
+      foreach my $ta ("colour$type:text","destination:colour:text$type") { #,"colour:text"
+        if (existEntryI($tags,$ta,$i)) {
+          $col = $tags->{$ta}[$i];
+          last;
           }
-        last;  
-        }  
+        if (existEntryOnlyOne($tags,$ta)) {
+          $col = $tags->{$ta}[0];
+          last;
+          }
+        }
       }  
-#Entry colour tags      
-    if ($tags->{'destination:colour'.$type} && $tags->{'destination:colour'.$type}[$i]) {  
+#Entry colour tags
+    if (existEntryI($tags,'destination:colour'.$type,$i)) {
       if ($part eq 'back'){
         $col = $tags->{'destination:colour'.$type}[$i]  
         }
       if ($part eq 'front' && $col eq '') {
         $col = bestTextColor($tags->{'destination:colour'.$type}[$i]);
         if ($conf->{country} eq 'AT' && $tags->{'destination:colour'.$type}[$i] eq 'green') {
-          $col = 'yellow';
+          $col = 'AT:yellow';
+          }
+        }
+      }
+    elsif (existEntryI($tags,'destination:colour:back'.$type,$i)) {
+      if ($part eq 'back'){
+        $col = $tags->{'destination:colour:back'.$type}[$i]
+        }
+      if ($part eq 'front' && $col eq '') {
+        $col = bestTextColor($tags->{'destination:colour:back'.$type}[$i]);
+        if ($conf->{country} eq 'AT' && $tags->{'destination:colour:back'.$type}[$i] eq 'green') {
+          $col = 'AT:yellow';
           }
         }
       }
     else {
-#Entry DE      
+
+#Entry DE
       if ($conf->{country} eq 'DE' && $type eq ':to') {
         if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A\s/)
-            || ($tags->{'destination:symbol:to'} && $tags->{'destination:symbol:to'}[$i] eq 'motorway')) {
-          $col = "#2568aa" if $part eq 'back'; 
+            || ($tags->{'destination:symbol:to'} && $tags->{'destination:symbol:to'}[$i] eq 'motorway')
+#             ||
+            ) {
+          $col = 'DE:blue' if $part eq 'back';
           $col = 'white'   if $part eq 'front';
           }
         }
@@ -1146,7 +1278,7 @@ sub getBackground {
       if ($conf->{country} eq 'AT' && $type eq ':to') {
         if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A/)
             || ($tags->{'destination:symbol:to'} && $tags->{'destination:symbol:to'}[$i] eq 'motorway')) {
-          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'AT:blue' if $part eq 'back';
           $col = 'white'   if $part eq 'front';
           }
         }  
@@ -1154,27 +1286,53 @@ sub getBackground {
       if ($conf->{country} eq 'FR' && $type eq ':to') {
         if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A/)
             || ($tags->{'destination:symbol:to'} && $tags->{'destination:symbol:to'}[$i] eq 'motorway')) {
-          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'FR:blue' if $part eq 'back';
           $col = 'white'   if $part eq 'front';
           }
         }        
-      
+#Entry GR
+      if ($conf->{country} eq 'GR' && $type eq ':to') {
+        if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A\s/)
+            || ($tags->{'destination:symbol:to'} && $tags->{'destination:symbol:to'}[$i] eq 'motorway')) {
+          $col = 'GR:green'  if $part eq 'back';
+          $col = 'GR:yellow' if $part eq 'front';
+          }
+        }
 #Entry PT
       if ($conf->{country} eq 'PT' && $type eq ':to') {
         if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A/)
             || ($tags->{'destination:symbol:to'} && $tags->{'destination:symbol:to'}[$i] eq 'motorway')) {
-          $col = "#2568aa" if $part eq 'back'; 
+          $col = 'PT:blue' if $part eq 'back';
           $col = 'white'   if $part eq 'front';
           }
-        }        
+        }
       }      
+    if( $col eq '' && $part eq 'front') {
+      $col = bestTextColor(getBackground($lane,$i,$type,'back'));
+      }
     }
   if( $col eq '' && $part eq 'front') {
     $col = bestTextColor(getBackground($lane,0,'main','back'));
     }
+
   $col = getRGBColor($col);  
   return $col;
 }
+
+
+
+sub existEntryI {
+  my ($tags,$ta,$i) = @_;
+  return 1 if $tags->{$ta} && scalar @{$tags->{$ta}}>$i && $tags->{$ta}[$i] ne "";
+  return 0;
+  }
+
+sub existEntryOnlyOne {
+  my ($tags,$ta) = @_;
+  return 1 if $tags->{$ta} && scalar @{$tags->{$ta}}==1 && $tags->{$ta}[0] ne "";
+  return 0;
+  }
+
 
 
 sub bestTextColor {
@@ -1182,6 +1340,7 @@ sub bestTextColor {
   $col = getRGBColor($col);
   my ($red,$green,$blue) = $col =~ /(\w\w)(\w\w)(\w\w)/;
   return 'black' if (hex($red)*0.299 + hex($green)*0.587 + hex($blue)*0.114) > 186;
+  return 'GR:yellow' if ($conf->{country} eq 'GR');
   return 'white';
   }
   
@@ -1209,67 +1368,35 @@ sub drawText {
   return $image;
   }
 
-  
- 
-sub getRGBColor {
-my @names  = ('aliceblue','antiquewhite','aqua','aquamarine','azure','beige','bisque','black','blanchedalmond','blue',
-        'blueviolet','brown','burlywood','cadetblue','chartreuse','chocolate','coral','cornflowerblue','cornsilk',
-        'crimson','cyan','darkblue','darkcyan','darkgoldenrod','darkgray','darkgrey','darkgreen','darkkhaki',
-        'darkmagenta','darkolivegreen','darkorange','darkorchid','darkred','darksalmon','darkseagreen',
-        'darkslateblue','darkslategray','darkslategrey','darkturquoise','darkviolet','deeppink','deepskyblue',
-        'dimgray','dimgrey','dodgerblue','firebrick','floralwhite','forestgreen','fuchsia','gainsboro','ghostwhite',
-        'gold','goldenrod','gray','grey','green','greenyellow','honeydew','hotpink','indianred','indigo','ivory',
-        'khaki','lavender','lavenderblush','lawngreen','lemonchiffon','lightblue','lightcoral','lightcyan',
-        'lightgoldenrodyellow','lightgray','lightgrey','lightgreen','lightpink','lightsalmon','lightseagreen',
-        'lightskyblue','lightslategray','lightslategrey','lightsteelblue','lightyellow','lime','limegreen',
-        'linen','magenta','maroon','mediumaquamarine','mediumblue','mediumorchid','mediumpurple','mediumseagreen',
-        'mediumslateblue','mediumspringgreen','mediumturquoise','mediumvioletred','midnightblue','mintcream',
-        'mistyrose','moccasin','navajowhite','navy','oldlace','olive','olivedrab','orange','orangered','orchid',
-        'palegoldenrod','palegreen','paleturquoise','palevioletred','papayawhip','peachpuff','peru','pink','plum',
-        'powderblue','purple','rebeccapurple','red','rosybrown','royalblue','saddlebrown','salmon','sandybrown',
-        'seagreen','seashell','sienna','silver','skyblue','slateblue','slategray','slategrey','snow','springgreen',
-        'steelblue','tan','teal','thistle','tomato','turquoise','violet','wheat','white','whitesmoke','yellow',
-        'yellowgreen');
-my @colors = ('f0f8ff','faebd7','00ffff','7fffd4','f0ffff','f5f5dc','ffe4c4','000000','ffebcd','2568aa','8a2be2',
-        'a52a2a','deb887','5f9ea0','7fff00','d2691e','ff7f50','6495ed','fff8dc','dc143c','00ffff','00008b','008b8b','b8860b',
-        'a9a9a9','a9a9a9','006400','bdb76b','8b008b','556b2f','ff8c00','9932cc','8b0000','e9967a','8fbc8f','483d8b','2f4f4f',
-        '2f4f4f','00ced1','9400d3','ff1493','00bfff','696969','696969','1e90ff','b22222','fffaf0','228b22','ff00ff','dcdcdc',
-        'f8f8ff','ffd700','daa520','808080','808080','008000','adff2f','f0fff0','ff69b4','cd5c5c','4b0082','fffff0','f0e68c',
-        'e6e6fa','fff0f5','7cfc00','fffacd','add8e6','f08080','e0ffff','fafad2','d3d3d3','d3d3d3','90ee90','ffb6c1','ffa07a',
-        '20b2aa','87cefa','778899','778899','b0c4de','ffffe0','00ff00','32cd32','faf0e6','ff00ff','800000','66cdaa','0000cd',
-        'ba55d3','9370db','3cb371','7b68ee','00fa9a','48d1cc','c71585','191970','f5fffa','ffe4e1','ffe4b5','ffdead','000080',
-        'fdf5e6','808000','6b8e23','ffa500','ff4500','da70d6','eee8aa','98fb98','afeeee','db7093','ffefd5','ffdab9','cd853f',
-        'ffc0cb','dda0dd','b0e0e6','800080','663399','ff0000','bc8f8f','4169e1','8b4513','fa8072','f4a460','2e8b57','fff5ee',
-        'a0522d','c0c0c0','87ceeb','6a5acd','708090','708090','fffafa','00ff7f','4682b4','d2b48c','008080','d8bfd8','ff6347',
-        '40e0d0','ee82ee','f5deb3','ffffff','f5f5f5','f0e060','9acd32');
-  my $col = shift @_;
-  if ($col =~ /^#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])$/) {
-    return "#$1$1$2$2$3$3";
-    }
-  if ($col =~ /^#([0-9a-fA-F]){6}$/) {
-    return $col;
-    }
-  $col = lc($col);  
-  for (my $i = 0; $i < scalar @names;$i++) {
-    if ($col eq $names[$i]) { 
-      return '#'.$colors[$i];
+sub drawDistance {
+  my ($lane,$i,$type,$pos) = @_;
+     $type //= '';
+  my $image = '';
+  my $d = $conf->{direction};
+
+  return;
+
+  if($store->{$d}[$lane]{'destination:distance'.$type}) {
+
+    if( existEntryI($store->{$d}[$lane],'destination:distance'.$type,$i)) {
+      my $dis = $store->{$d}[$lane]{'destination:distance'.$type}[$i];
+      my $tcol = getBackground($lane,$i,$type,'front');
+      $image .= '<g transform="translate('.(170).' 0)">'."\n".'<text class="distance" datapos="'.($pos).'" style="fill:'.$tcol.'">'.$dis.'</text>'."\n".'</g>'."\n";
       }
     }
-#   return $col; #leave as is  
   }
-
-
+ 
   
-sub isFoundInNext {
+sub isFoundInNext { #TODO rewrite to return position of entry
   my ($d,$lane,$key,$val) = @_;
   return 3 if $val eq "";
   return 3 if $val eq "none";
   
   if($lane>0) {
-    return 1 if grep( /^$val$/, @{$store->{$d}[$lane-1]{$key}});
+    return 1 if grep( /^\Q$val\E$/, @{$store->{$d}[$lane-1]{$key}});
     }
   if($store->{$d}[$lane+1]) {
-    return 2 if grep( /^$val$/, @{$store->{$d}[$lane+1]{$key}});
+    return 2 if grep( /^\Q$val\E$/, @{$store->{$d}[$lane+1]{$key}});
     }
   return 0;
   }

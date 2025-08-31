@@ -1,13 +1,13 @@
 OSM SVG Destination Signs
 =========================
 
-A live instance is available at http://osm.mueschelsoft.de/destinations/example/index.htm
+A live instance is available at http://osm.janmichel.eu/destinations/example/index.htm
 
 Keys supported so far
 ---------------------
   * destination, destination:to
   * destination:ref, destination:ref:to
-  * destination:int_ref
+  * destination:int_ref, destination:int_ref:to
   * destination:symbol, destination:symbol:to
   * destination:arrow, destination:arrow:to
   * destination:colour, destination:colour:to
