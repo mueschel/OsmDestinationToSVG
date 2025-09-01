@@ -947,21 +947,6 @@ sub getArrow {
     $col[0] = getArrowColor($lane,$entry,':to','front');
     $o .= '<use href="#arrow" transform="translate(10 '.$height.') rotate('.$deg.' 0 0) scale(1)" style="stroke:'.$col[0].';"/>'."\n";
     }  
-#   elsif ($conf->{$d}{splitlane}[$lane]) {
-#
-#
-#       my @col;
-# #       $col[0] = getBackground($lane-1,$entry,'main','front');
-# #       $col[1] = getBackground($lane+1,$entry,'main','front');
-#
-#       my $i = 0;
-#       my $offset = -15*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
-#       foreach my $deg (@{$conf->{$d}{arrows}[$lane]}) {
-#         next if $deg eq 'none';
-#         $o .= '<use href="#arrow" transform="translate('.($SIGNWIDTH/8+$offset).' %ARROWPOS%) rotate('.$deg.' 0 0)" style="stroke:'.$col[$i++].';"/>'."\n";
-#         $offset += 30;
-#         }
-#       }
   else {
     my $offset = -20*(scalar @{$conf->{$d}{arrows}[$lane]} -1);
     my $offsetstep = 40;
