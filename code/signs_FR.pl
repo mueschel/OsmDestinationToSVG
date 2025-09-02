@@ -136,7 +136,7 @@
  recycling_centre => "../../destinations/code/symbols/FR_ID24.svg", 
  rest_area        => "../../destinations/code/symbols/parking.svg",   
  restaurant       => "../../destinations/code/symbols/restaurant.svg", 
- ring_road        => "../../destinations/code/symbols/FR_SU5.svg",   
+ ring_road        => "../../destinations/code/symbols/FR_SU4.svg",   
  's-bahn'         => "../../destinations/code/symbols/sbahn.svg", 
  shopping_centre  => "../../destinations/code/symbols/FR_ID36.svg", 
  slipway          => "../../destinations/code/symbols/FR_ID20e.svg", 
