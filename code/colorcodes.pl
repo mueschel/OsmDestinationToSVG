@@ -170,6 +170,12 @@ $colorcodes->{GR}{'blue'}      = '2568aa';
 $colorcodes->{GR}{'green'}     = '009933';
 $colorcodes->{GR}{'yellow'}    = 'f0e060';
 
+$colorcodes->{PL}{'blue'}      = '2e4994';
+$colorcodes->{PL}{'green'}     = '2c5c32';
+$colorcodes->{PL}{'yellow'}    = 'febe0b';
+$colorcodes->{PL}{'brown'}     = '7a613e';
+$colorcodes->{PL}{'red'}       = 'd40000';
+
 $colorcodes->{PT}{'blue'}      = '2568aa';
 
 $colorcodes->{SR}{'green'}     = '009933';

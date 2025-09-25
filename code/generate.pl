@@ -105,7 +105,8 @@ for (my $sd= 0; $sd < scalar @showdirections; $sd++) {
 
 #################################################
 ## Define order and style of signs
-#################################################    
+#################################################
+my @destorder = ('symbol','country','ref','dest','distance');
 my @order = ('to','dest','symbol','ref','country');
 my @pinline = (0,0,0,0,0,0,0,0,0,0);
 my @bottom  = (0,0,0,0,0,0,0,0,0,0);
@@ -129,6 +130,11 @@ my @bottom  = (0,0,0,0,0,0,0,0,0,0);
 @order    = ('country','to','dest','symbol','ref') if($conf->{country} eq 'SR');
 @pinline  = ( 0,        0,   0,     0,       0)    if($conf->{country} eq 'SR');
 @bottom   = ( 0,        1,   0,     0,       1)    if($conf->{country} eq 'SR');
+
+@destorder = ('ref','symbol','dest','country','distance') if($conf->{country} eq 'PL');
+@order    = ('to','ref','country','dest','symbol') if($conf->{country} eq 'PL');
+@pinline  = ( 0,   0,    0,       0,     0)        if($conf->{country} eq 'PL');
+@bottom   = ( 0,   0,    0,       0,     0)        if($conf->{country} eq 'PL');
 
 my $allowstack = 0;
 
@@ -223,32 +229,46 @@ foreach my $d (@showdirections) {
               $pos += 25;
               }
 
-            $tmp = $l->{'destination:symbol:to'}[$i] if ($l->{'destination:symbol:to'});
-            if ($tmp) {
-              foreach my $t (split(',',$tmp)) {
-                $t = lc($t);
-                $t = "notfound" unless ($signs{$t});
-                $image .= '<image href="'.$signs{$t}.'" width="18" height="18" transform="translate('.$pos.' -10)"/>'."\n";
-                $pos += 20;
-                }
-              }          
+            foreach my $p (0..scalar @destorder-1) {
+              my $destpart = $destorder[$p];
 
-            if ($conf->{$d}{orderedrefto}[$lane]  &&  $l->{'destination:ref:to'} && ($tmp = $l->{'destination:ref:to'}[$i])) {
-              $image .= makeRef($pos,0,$tmp);
-              $pos += 38;
-              }
-            if ($conf->{$d}{orderedrefto}[$lane]  &&  $l->{'destination:int_ref:to'} && ($tmp = $l->{'destination:int_ref:to'}[$i])) {
-              $image .= makeRef($pos,0,$tmp);
-              $pos += 38;
+              if($destpart eq 'symbol' && $l->{'destination:symbol:to'} && ($tmp = $l->{'destination:symbol:to'}[$i])) {
+                foreach my $t (split(',',$tmp)) {
+                  $t = lc($t);
+                  $t = "notfound" unless ($signs{$t});
+                  $image .= '<image href="'.$signs{$t}.'" width="18" height="18" transform="translate('.$pos.' -10)"/>'."\n";
+                  $pos += 20;
+                  }
+                }
+              if($destpart eq 'country' && $l->{'destination:country:to'} && ($tmp = $l->{'destination:country:to'}[$i])) {
+                foreach my $t (split(' ',$tmp)) {
+                  $image .= '<ellipse class="country" cx="9" cy="0" rx="12" ry="8" style="fill:white;stroke:black;"  transform="translate('.$pos.' 0)"/>'."\n";
+                  $image .= '<g transform="translate('.($pos+9).' 0)">'."\n".'<text class="country" datapos="'.$pos.'" style="fill:black">'.$t.'</text>'."\n".'</g>'."\n";
+                  $pos += 25;
+                  }
+                }
+              if ($destpart eq 'ref' && $conf->{$d}{orderedrefto}[$lane]  &&  $l->{'destination:ref:to'} && ($tmp = $l->{'destination:ref:to'}[$i])) {
+                $image .= makeRef($pos,0,$tmp);
+                $pos += 38;
+                }
+              if ($destpart eq 'ref' && $conf->{$d}{orderedrefto}[$lane]  &&  $l->{'destination:int_ref:to'} && ($tmp = $l->{'destination:int_ref:to'}[$i])) {
+                $image .= makeRef($pos,0,$tmp);
+                $pos += 38;
+                }
+              if($destpart eq 'dest') {
+                $image .= drawText($lane,$i,':to',$pos);
+                $pos = 150;
+                }
+              if($destpart eq 'distance' && $l->{'destination:distance:to'}) {
+                if (existEntryI($l,'destination:distance:to',$i)) {
+                  $image .= drawDistance($lane,$i,':to',$pos);
+                  $pos += 20;
+                  }
+                }
+
               }
 
-            $image .= drawText($lane,$i,':to',$pos);
-            if($l->{'destination:distance:to'}) {
-              if (existEntryI($l,'destination:distance:to',$i)) {
-                $image .= drawDistance($lane,$i,':to',$pos);
-                }
-              }
-            $image .= "</g>\n";  
+            $image .= "</g>\n";
             $entrypos+=20;
             $pos = 0;
             }
@@ -275,10 +295,11 @@ foreach my $d (@showdirections) {
                 $pos += 25;
                 }
               }
- 
-            if($l->{'destination:symbol'} && $conf->{$d}{numbersymbols}[$lane] == 0) {
-              $tmp = $l->{'destination:symbol'}[$i]; 
-              if ($tmp) {
+
+            foreach my $p (0..scalar @destorder-1) {
+              my $destpart = $destorder[$p];
+
+              if($destpart eq 'symbol' && $l->{'destination:symbol'} && $conf->{$d}{numbersymbols}[$lane] == 0 && ($tmp = $l->{'destination:symbol'}[$i])) {
                 foreach my $t (split(',',$tmp)) {
                   $t = lc($t);
                   $t = "notfound" unless ($signs{$t});
@@ -286,30 +307,32 @@ foreach my $d (@showdirections) {
                   $pos += 20;
                   }
                 }
-              }
-            if($l->{'destination:country'} && $conf->{$d}{numbercountries}[$lane] == 0) {
-              $tmp = $l->{'destination:country'}[$i]; 
-              if ($tmp) {
-                $image .= '<ellipse class="country" cx="9" cy="0" rx="12" ry="8" style="fill:white;stroke:black;"  transform="translate('.$pos.' 0)"/>'."\n";
-                $image .= '<g transform="translate('.($pos+9).' 0)">'."\n".'<text class="country" datapos="'.$pos.'" style="fill:black">'.$tmp.'</text>'."\n".'</g>'."\n";
-
-                $pos += 22;
-                }       
-              }              
-              
-            if ($conf->{$d}{orderedrefs}[$lane]  && $l->{'destination:ref'} && ($tmp = $l->{'destination:ref'}[$i])) {
-              $image .= makeRef($pos,0,$tmp,$l,$i);
-              $pos += 38;
-              }          
-            if ($conf->{$d}{orderedrefs}[$lane]  && $l->{'destination:int_ref'} && ($tmp = $l->{'destination:int_ref'}[$i])) {
-              $image .= makeRef($pos,0,$tmp,$l,$i);
-              $pos += 38;
-              }           
-            $image .= drawText($lane,$i,'',$pos);
-            if($l->{'destination:distance'}) {
-              if (existEntryI($l,'destination:distance',$i)) {
-                $image .= drawDistance($lane,$i,'',$pos);
+              if($destpart eq 'country' && $l->{'destination:country'} && $conf->{$d}{numbercountries}[$lane] == 0 && ($tmp = $l->{'destination:country'}[$i])) {
+                foreach my $t (split(' ',$tmp)) {
+                  $image .= '<ellipse class="country" cx="9" cy="0" rx="12" ry="8" style="fill:white;stroke:black;"  transform="translate('.$pos.' 0)"/>'."\n";
+                  $image .= '<g transform="translate('.($pos+9).' 0)">'."\n".'<text class="country" datapos="'.$pos.'" style="fill:black">'.$t.'</text>'."\n".'</g>'."\n";
+                  $pos += 25;
+                  }
                 }
+              if ($destpart eq 'ref' && $conf->{$d}{orderedrefs}[$lane]  && $l->{'destination:ref'} && ($tmp = $l->{'destination:ref'}[$i])) {
+                $image .= makeRef($pos,0,$tmp,$l,$i);
+                $pos += 38;
+                }
+              if ($destpart eq 'ref' && $conf->{$d}{orderedrefs}[$lane]  && $l->{'destination:int_ref'} && ($tmp = $l->{'destination:int_ref'}[$i])) {
+                $image .= makeRef($pos,0,$tmp,$l,$i);
+                $pos += 38;
+                }
+              if($destpart eq 'dest') {
+                $image .= drawText($lane,$i,'',$pos);
+                $pos = 150;
+                }
+              if($destpart eq 'distance' && $l->{'destination:distance'}) {
+                if (existEntryI($l,'destination:distance',$i)) {
+                  $image .= drawDistance($lane,$i,'',$pos);
+                  $pos += 20;
+                  }
+                }
+
               }
             $image .= "</g>\n";  
             $entrypos+=20;
@@ -348,10 +371,12 @@ foreach my $d (@showdirections) {
             my $tmp = $l->{'destination:country'}[$i] if ($l->{'destination:country'}); 
             if ($tmp ) {
               $image .= '<g transform="translate('.$pos.' '.$entrypos.')">'."\n";
-                $image .= '<ellipse class="country" cx="9" cy="0" rx="12" ry="8" style="fill:white;stroke:black;"  transform="translate('.$pos.' 0)"/>'."\n";
-                $image .= '<g transform="translate('.($pos+9).' 0)">'."\n".'<text class="country" datapos="'.$pos.'" style="fill:black">'.$tmp.'</text>'."\n".'</g>'."\n";
-              $image .= "</g>\n";  
-              $pos += 25;
+                foreach my $t (split(' ',$tmp)) {
+                  $image .= '<ellipse class="country" cx="9" cy="0" rx="12" ry="8" style="fill:white;stroke:black;"  transform="translate('.$pos.' 0)"/>'."\n";
+                  $image .= '<g transform="translate('.($pos+9).' 0)">'."\n".'<text class="country" datapos="'.$pos.'" style="fill:black">'.$t.'</text>'."\n".'</g>'."\n";
+                  $pos += 25;
+                  }
+              $image .= "</g>\n";
               $newline = 1;
               }       
             }
@@ -490,9 +515,10 @@ sub duplicateTags {
       
 #Treat all colour identical as if there is just a single one
     foreach my $l (0..$conf->{$d}{totallanes}-1) {
-      next if $conf->{country} eq 'GR'; #keep blue background on all white signs
       foreach my $ta (qw(destination:colour destination:colour:to colour:back colour:text)) {
         if($store->{$d}[$l]{$ta} && (scalar @{$store->{$d}[$l]{$ta}}) >= 1) {
+          #keep original background on all white signs in Greece and Poland
+          next if $conf->{country} =~ /^(GR|PL)$/ and $store->{$d}[$l]{$ta}[0] eq 'white';
           if (allsame(@{$store->{$d}[$l]{$ta}})) {
             @{$store->{$d}[$l]{$ta}} = ($store->{$d}[$l]{$ta}[0]);
             }
@@ -858,6 +884,15 @@ sub makeRef {
     $text =~ s/\s$//g;
     }
 
+  if($conf->{country} eq 'PL') {
+    $tcol = 'black'; $bcol = 'white';
+    $text =~ s/^\s//g;
+    $text =~ s/\s$//g;
+    if ($text =~ /^[AS]?\s?\d{1,2}$/) { $tcol = 'white'; $bcol = 'PL:red';}
+    if ($text =~ /^E\s?\d+$/)         { $tcol = 'white'; $bcol = 'PL:green';}
+    if ($text =~ /^\d{3}$/)           { $tcol = 'black'; $bcol = 'PL:yellow';}
+    }
+
   if($conf->{country} eq 'PT') {
     $tcol = 'black'; $bcol = 'white';
     if ($text =~ /^\s*A[\s\d]+/) { $tcol = 'white'; $bcol = 'PT:blue';}
@@ -1106,7 +1141,7 @@ sub getArrowColor {
   my $col = "";
   $col = getBackground($lane,$i,$type,'front'); #fallback
 
-  if ($conf->{country} eq 'GR') {  #hard override for white arrows in Greece
+  if ($conf->{country} =~ /^(GR|PL)$/) {  #hard override for white arrows in Greece and Poland
     $col = 'white';
     }
 
@@ -1238,7 +1273,19 @@ sub getBackground {
           $col = 'SR:yellow' if $part eq 'back';
           $col = 'black'     if $part eq 'front';
           }
-        }        
+        }
+#Main PL
+      if ($conf->{country} eq 'PL') {
+        if (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^A/) ||
+            ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^A/)) {
+          $col = 'PL:blue' if $part eq 'back';
+          $col = 'white'   if $part eq 'front';
+          }
+        else {
+          $col = 'PL:green' if $part eq 'back';
+          $col = 'white'    if $part eq 'front';
+          }
+        }
       }
     }
     
@@ -1315,6 +1362,14 @@ sub getBackground {
           $col = 'GR:yellow' if $part eq 'front';
           }
         }
+#Entry PL
+      if ($conf->{country} eq 'PL' && $type eq ':to') {
+        if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A/)
+            || ($tags->{'destination:symbol:to'} && $tags->{'destination:symbol:to'}[$i] eq 'motorway')) {
+          $col = 'PL:blue' if $part eq 'back';
+          $col = 'white'   if $part eq 'front';
+          }
+        }
 #Entry PT
       if ($conf->{country} eq 'PT' && $type eq ':to') {
         if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A/)
@@ -1356,7 +1411,10 @@ sub bestTextColor {
   my $col = shift @_;
   $col = getRGBColor($col);
   my ($red,$green,$blue) = $col =~ /(\w\w)(\w\w)(\w\w)/;
-  return 'black' if (hex($red)*0.299 + hex($green)*0.587 + hex($blue)*0.114) > 186;
+  if ((hex($red)*0.299 + hex($green)*0.587 + hex($blue)*0.114) > 186) {
+    return 'PL:blue' if ($conf->{country} eq 'PL');
+    return 'black';
+    }
   return 'GR:yellow' if ($conf->{country} eq 'GR');
   return 'white';
   }
@@ -1398,7 +1456,7 @@ sub drawDistance {
     if( existEntryI($store->{$d}[$lane],'destination:distance'.$type,$i)) {
       my $dis = $store->{$d}[$lane]{'destination:distance'.$type}[$i];
       my $tcol = getBackground($lane,$i,$type,'front');
-      $image .= '<g transform="translate('.(170).' 0)">'."\n".'<text class="distance" datapos="'.($pos).'" style="fill:'.$tcol.'">'.$dis.'</text>'."\n".'</g>'."\n";
+      $image .= '<g transform="translate('.$pos.' 0)">'."\n".'<text class="distance" datapos="'.($pos).'" style="fill:'.$tcol.'">'.$dis.'</text>'."\n".'</g>'."\n";
       }
     }
   }
