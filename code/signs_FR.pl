@@ -100,6 +100,7 @@
  food             => "../../destinations/code/symbols/FR_ID26a.svg",
  golf             => "../../destinations/code/symbols/golf.svg",
  golf_court       => "../../destinations/code/symbols/golf_court.svg",
+ gvz              => "../../destinations/code/symbols/gvz.svg",
  harbor           => "../../destinations/code/symbols/FR_ID13b.svg",
  harbour          => "../../destinations/code/symbols/FR_ID13b.svg",
  hiking           => "../../destinations/code/symbols/FR_ID23.svg",

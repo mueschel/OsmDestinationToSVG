@@ -32,6 +32,7 @@
  food             => "../../destinations/code/symbols/restaurant.svg",
  golf             => "../../destinations/code/symbols/golf.svg",
  golf_court       => "../../destinations/code/symbols/golf_court.svg",
+ gvz              => "../../destinations/code/symbols/gvz.svg",
  harbor           => "../../destinations/code/symbols/ferry.svg",
  harbour          => "../../destinations/code/symbols/ferry.svg",
  hgv              => "../../destinations/code/symbols/hgv.svg",

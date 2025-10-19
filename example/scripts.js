@@ -1,4 +1,5 @@
-var endpoint = "https://overpass.kumi.systems/api/";
+//var endpoint = "https://overpass.kumi.systems/api/";
+var endpoint = "https://osm.janmichel.eu/overpass/";
 
 function getData(command,dId,callback,data,id) {
   
