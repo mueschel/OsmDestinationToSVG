@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+<!--
+	This work is in the Public Domain (CC0 1.0). Created by https://www.openstreetmap.org/user/Waldamsel
+	Date of creation: 25. October 2025
+	You can copy, modify, distribute, and perform the work, even for commercial purposes, without asking for permission.
+	See https://creativecommons.org/publicdomain/zero/1.0/
+-->
+	<!-- ### Güterwaggon mit Container am Kranhaken schwebend ### -->
+  
+	<!-- Schwarzer Rahmen um die Zeichenfläche -->
+	<rect x="0" y="0" width="500" height="500" fill="white" stroke="black" stroke-width="4" />
+
+	<!-- Haken -->
+	<path d="M 250,45 L 250,134 " stroke="black" stroke-width="9" fill="black"/>
+	<path id="arc" d="M 250,131 A 20,15 0 1,1 230,145" stroke="black" stroke-width="7" fill="none"/>
+
+	<!-- Traverse -->
+	<path d="M 50,205 L 200,155 300,155 450,205" stroke="black" stroke-width="7" fill="none"/>
+
+	<!-- Container -->
+	<rect x="50" y="205" width="400" height="180" fill="black" stroke="black" stroke-width="1" />
+
+	<!-- Standfüße -->
+	<polyline points="60,385 70,395 90,395 100,385" fill="black" stroke="black" stroke-width="1"/>
+	<polyline points="440,385 430,395 410,395 400,385" fill="black" stroke="black" stroke-width="1"/>
+
+	<!-- Ladefläche -->
+	<rect x="20" y="415" width="460" height="15" fill="black" stroke="black" stroke-width="1" />
+
+	<!-- Puffer -->
+	<rect x="20" y="411" width="7" height="24" fill="black" stroke="black" stroke-width="1" />
+	<rect x="473" y="411" width="7" height="24" fill="black" stroke="black" stroke-width="1" />
+
+	<!-- Räder -->
+	<path id="arc" d="M 60,434 A 20,20 0 0,0 120,434 Z" />
+	<path id="arc" d="M 380,434 A 20,20 0 0,0 440,434 Z" />
+	
+	<!-- Gleis -->
+	<line x1="20" y1="465" x2="480" y2="465" stroke="black" stroke-width="3" />
+</svg>
