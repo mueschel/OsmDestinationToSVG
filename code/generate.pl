@@ -247,16 +247,18 @@ foreach my $d (@showdirections) {
                   $pos += 25;
                   }
                 }
+              my  $noshield =  ($conf->{country} eq 'FR' && $l->{'highway'} ne 'motorway' ) ? 1 : 0;  #no inline ref:to shields in FR, unless on motorways
+              if ($noshield) {getBackground($lane,$i,':to','front');}
               if ($destpart eq 'ref' && $conf->{$d}{orderedrefto}[$lane]  &&  $l->{'destination:ref:to'} && ($tmp = $l->{'destination:ref:to'}[$i])) {
-                $image .= makeRef($pos,0,$tmp);
+                $image .= makeRef($pos,0,$tmp,$l,$i,$noshield);
                 $pos += 38;
                 }
               if ($destpart eq 'ref' && $conf->{$d}{orderedrefto}[$lane]  &&  $l->{'destination:int_ref:to'} && ($tmp = $l->{'destination:int_ref:to'}[$i])) {
-                $image .= makeRef($pos,0,$tmp);
+                $image .= makeRef($pos,0,$tmp,$l,$i,$noshield);
                 $pos += 38;
                 }
               if($destpart eq 'dest') {
-                $image .= drawText($lane,$i,':to',$pos);
+                $image .= drawText($lane,$i,':to',$pos,$noshield);
                 $pos = 150;
                 }
               if($destpart eq 'distance' && $l->{'destination:distance:to'}) {
@@ -674,10 +676,12 @@ sub calcNumbers {
 #           ($conf->{$d}{numberdestto}[$lanenum] == 0 || $conf->{$d}{numberdest}[$lanenum] >= 2) &&                                     #and no destto or at least 2 refs
           ($conf->{$d}{numberintrefs}[$lanenum] != 0 || $conf->{$d}{numberrefs}[$lanenum] != 0)                                         #and at least some ref/intref
       ) {
-        $conf->{$d}{numberrefs}[$lanenum] = 0;                                     #remove ref counts, because they are ordered with dests
-        $conf->{$d}{numberintrefs}[$lanenum] = 0;
-        $entries[2] = 0;
-        $conf->{$d}{orderedrefs}[$lanenum] = 1;
+        unless($conf->{country} eq 'FR' && $conf->{$d}{numberrefs}[$lanenum] <= 2) { #don't merge for French signs with 1 or 2 entries.
+          $conf->{$d}{numberrefs}[$lanenum] = 0;                                     #remove ref counts, because they are ordered with dests
+          $conf->{$d}{numberintrefs}[$lanenum] = 0;
+          $entries[2] = 0;
+          $conf->{$d}{orderedrefs}[$lanenum] = 1;
+          }
         }
       if ($conf->{$d}{numberrefto}[$lanenum] == $conf->{$d}{numberdestto}[$lanenum]) {
         $conf->{$d}{numberrefto}[$lanenum] = 0;
@@ -838,7 +842,7 @@ sub checkSplitLanes {
 ## Generate a ref number
 #################################################   
 sub makeRef {
-  my ($xpos,$entrypos,$text,$tags,$entry) = @_;
+  my ($xpos,$entrypos,$text,$tags,$entry,$noshield) = @_;
   $xpos += 17 if $conf->{country} ne 'PT';
   my $class = '';
   
@@ -870,6 +874,9 @@ sub makeRef {
     if ($text =~ /^\s*[D][\s\d]+/)   { $tcol = 'black'; $bcol = 'FR:yellow';}
     if ($text =~ /^\s*[CRP][\s\d]+/) { $tcol = 'black'; $bcol = 'white';}
     if ($text =~ /^\s*[MT][\s\d]+/)  { $tcol = 'white'; $bcol = 'FR:lightblue';}
+    if($noshield) {
+      $tcol = $noshield;
+      }
     }     
 
   if($conf->{country} eq 'GR') {
@@ -925,11 +932,15 @@ sub makeRef {
   if($conf->{country} eq 'PT') {
     $o .= '<rect class="destinationrefs '.$conf->{country}.'" x="0" y="-9" width="30" height="16" rx="2" style="fill:'.$bcol.';stroke:none"/>'."\n";
     }
-  else {
+  elsif (!$noshield) {
     $o .= '<rect class="destinationrefs '.$conf->{country}.'" x="-15" y="-9" width="30" height="16" rx="2" style="fill:'.$bcol.';stroke:'.$tcol.'"/>'."\n";
     }
-  $o .= '<text datapos="0" class="destinationreftext destinationrefs '.$conf->{country}.'" style="fill:'.$tcol.'">'
-            .$text.'</text>'."\n";
+
+  if($noshield) {
+    $noshield = "noshield";
+    }
+
+  $o .= '<text datapos="0" class="destinationreftext destinationrefs '.$conf->{country}.' '.$noshield.'" style="fill:'.$tcol.'">'.$text.'</text>'."\n";
   $o .= '</g>'."\n";
   return $o;
 }
@@ -1430,13 +1441,16 @@ sub drawBackground {
   }
   
 sub drawText {
-  my ($lane,$i,$type,$pos) = @_;
+  my ($lane,$i,$type,$pos, $noshield) = @_;
      $type //= '';
   my $image = ''; 
   my $d = $conf->{direction};
 
   if($store->{$d}[$lane]{'destination'.$type}) {  
     my $text =  $store->{$d}[$lane]{'destination'.$type}[$i];  
+    if($noshield && $conf->{country} eq 'FR') {
+      $text = '('.$text.')';
+      }
     my $tcol = getBackground($lane,$i,$type,'front');
     $image .= '<g transform="translate('.$pos.' 0)">'."\n".'<text class="resizeme" datapos="'.$pos.'" style="fill:'.$tcol.'">'.$text.'</text>'."\n".'</g>'."\n";
     }

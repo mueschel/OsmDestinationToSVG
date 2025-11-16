@@ -99,6 +99,12 @@ viewBox="-1 -1  %IMAGEWIDTH%  %IMAGEHEIGHT%"
     ellipse.country {
       stroke-width:1px;
       }
+
+      .sign text.destinationrefs.FR.noshield, .sign g:has(>text.destinationrefs.FR.noshield) + g text {
+      font-style:italic;
+      }
+
+
 ]]></style>
 
 
