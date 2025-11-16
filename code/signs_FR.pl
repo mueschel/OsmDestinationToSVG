@@ -153,7 +153,7 @@
  swimming_hall    => "../../destinations/code/symbols/FR_ID20c.svg",
  tent_site        => "../../destinations/code/symbols/FR_ID8.svg",
  toilets          => "../../destinations/code/symbols/FR_ID31.svg", 
- toll             => "../../destinations/code/symbols/toll.svg", 
+ toll             => "../../destinations/code/symbols/FR_SU5.svg", 
  tourist_information => "../../destinations/code/symbols/information.svg", 
  train            => "../../destinations/code/symbols/train_station.svg", 
  train_station    => "../../destinations/code/symbols/FR_ID12a.svg", 
