@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.0"
+   width="106.29932"
+   height="106.29932"
+   id="svg1887">
+  <defs
+     id="defs1889" />
+  <g
+     transform="translate(-223.9932,-419.2127)"
+     id="layer1">
+    <g
+       transform="matrix(1.249992,0,0,-1.249992,-93.50477,1003.384)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:normal;word-spacing:normal;text-anchor:start;fill:none;fill-opacity:1;stroke:black;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10.43299961;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="g10"
+       xml:space="preserve">
+<polygon
+   points="254,382.3 339.04,382.3 339.04,467.34 254,467.34 254,382.3 "
+   style="fill:black;fill-rule:nonzero;stroke-width:0"
+   id="polygon12" />
+<polygon
+   points="254.85,383.16 338.19,383.16 338.19,466.49 254.85,466.49 254.85,383.16 "
+   style="fill:white;fill-rule:nonzero;stroke:white;stroke-width:0"
+   id="polygon14" />
+<path
+   d="M 279.24,451.06 L 279.24,451.06 C 276.79,452.95 276.41,456.34 277.54,458.61 C 280.18,464.26 289.23,463.32 289.61,456.15 C 289.8,450.88 284.14,449.55 284.14,449.75 L 284.14,449.75 L 284.91,434.82 L 303.39,434.64 L 303.39,430.49 L 285.11,430.49 L 285.3,426.72 L 308.11,426.34 L 319.79,402.22 L 327.14,405.42 L 328.84,401.84 L 317.15,396.57 L 305.27,422.01 L 280.58,422.2 L 279.24,451.06 z "
+   style="fill:black;fill-rule:nonzero;stroke-width:0"
+   id="path16" />
+<path
+   d="M 307.19,411.82 L 310.39,405.04 L 310.39,405.04 C 310.2,404.47 310.01,403.9 309.82,403.34 C 308.31,399.19 305.49,395.61 301.91,392.78 C 297.76,389.77 292.86,388.07 287.58,388.45 C 274.95,389.2 265.14,397.87 264.39,410.88 C 264.02,419.54 268.54,427.84 276.27,431.8 C 276.64,431.98 277.4,432.36 277.77,432.55 L 277.77,432.55 L 277.96,427.84 L 277.96,427.84 C 277.77,427.65 277.59,427.65 277.4,427.46 C 272.12,423.5 268.35,417.47 268.73,410.88 C 269.29,400.89 276.64,393.16 287.58,392.41 C 292.48,392.03 297.2,394.29 300.77,397.68 C 303.98,400.7 306.05,404.47 306.8,408.8 C 307,409.75 307,411.06 307.19,411.82 z "
+   style="fill:black;fill-rule:nonzero;stroke-width:0"
+   id="path18" />
+</g>  </g>
+</svg>
