@@ -159,6 +159,16 @@ $colorcodes->{DE}{'blue'}      = '2568aa';
 $colorcodes->{DE}{'yellow'}    = 'f0e060';
 $colorcodes->{DE}{'green'}     = '12623f'; ##007f00
 
+$colorcodes->{CH}{'green'}     = '007142'; # motorway, trunk
+$colorcodes->{CH}{'blue'}      = '00569c'; # primary, secondary
+$colorcodes->{CH}{'orange'}    = 'eb883a'; # detour
+$colorcodes->{CH}{'yellow'}    = 'ffe026'; # military
+$colorcodes->{CH}{'brown'}     = '826500'; # touristic
+$colorcodes->{CH}{'gray'}      = 'c3c3c2'; # company
+$colorcodes->{CH}{'grey'}      = 'c3c3c2'; # company
+$colorcodes->{CH}{'red'}       = 'b00000'; # bicycle
+$colorcodes->{CH}{'firebrick'} = 'ef2c30'; # motorway number background
+
 $colorcodes->{FR}{'blue'}      = '005098';
 $colorcodes->{FR}{'green'}     = '12623f';
 $colorcodes->{FR}{'yellow'}    = 'ffed00';

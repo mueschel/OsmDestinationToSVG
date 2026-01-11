@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.0"
+   width="74.798264"
+   height="35.437359"
+   id="svg1893"
+   sodipodi:docname="CH-Zusatztafel-Pistenfahrzeug.svg"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview13"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     showgrid="false"
+     inkscape:object-paths="false"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:bbox-nodes="true"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:zoom="8"
+     inkscape:cx="38.1875"
+     inkscape:cy="39.8125"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1893" />
+  <defs
+     id="defs1895" />
+  <g
+     transform="translate(-308.3152,-377.5006)"
+     id="layer1">
+    <g
+       transform="matrix(1.249992,0,0,-1.249992,-24.15443,926.2971)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;letter-spacing:normal;word-spacing:normal;text-anchor:start;fill:none;fill-opacity:1;stroke:#000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10.433;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="g10"
+       xml:space="preserve">
+<path
+   id="path8724"
+   style="fill:#000000;fill-rule:nonzero;stroke-width:0"
+   d="M 8.640625,0 C 8.2195754,-4.63799e-7 7.799298,-3.8886378e-4 7.1914062,0.34960938 6.8389952,0.5525128 6.3132103,1.1150165 6.140625,1.4746094 L 1.6523438,10.824219 c -0.4002956,0.834043 -0.5996094,2.016679 -0.5996094,3 v 2.951172 L 0.203125,17.25 v 2.824219 l 1.1542969,0.703125 c 0.2902678,1.001258 1.138323,1.822265 2.4453125,1.822265 H 56.589844 v -0.986328 l 1.988281,-0.05078 v -2.625 h -9.738281 l 9.738281,-5.574219 5.025391,8.761719 c -2.053085,1.335904 -3.291949,3.618911 -3.292969,6.068359 -3.54e-4,4.000975 3.243166,7.244495 7.244141,7.244141 4.000973,3.53e-4 7.244494,-3.243166 7.24414,-7.244141 -7.25e-4,-4.000212 -3.24393,-7.24254 -7.24414,-7.242187 -0.845102,0.0062 -1.682604,0.160186 -2.47461,0.455078 l -6.052734,-10.394531 -2.4375,1.363281 -12.298828,2.025391 -0.07617,-0.47461 -14.923828,2.47461 -0.388672,-0.363282 h -1.375 l -0.861328,0.863282 V 18.9375 H 21.177734 V 1.4882812 C 21.177734,0.81666248 20.330137,-4.5904e-8 19.277344,0 Z m -0.875,2.9492188 h 9.800781 V 10.238281 H 4.2910156 Z M 53.916016,14 l -8.59961,4.9375 h -15.375 v -0.5 l 14.611328,-2.400391 -0.07422,-0.511718 z m 13.638672,12.888672 a 1.3061494,1.3061494 0 0 1 1.30664,1.304687 1.3061494,1.3061494 0 0 1 -1.30664,1.306641 1.3061494,1.3061494 0 0 1 -1.306641,-1.306641 1.3061494,1.3061494 0 0 1 1.306641,-1.304687 z"
+   transform="matrix(0.80000512,0,0,-0.80000512,265.97741,439.04001)" />
+<path
+   id="path14"
+   style="display:inline;fill:#000000;fill-rule:nonzero;stroke-width:0"
+   d="M 4.0058594,23.224609 C 1.7935263,23.224951 2.008175e-4,25.018276 0,27.230469 c 0.00179971,1.537766 0.88251912,2.796026 1.921875,3.402343 l 6.1464844,3.585938 c 2.0918106,1.219462 2.0918676,1.218753 3.6660156,1.21875 h 37.548828 c 3.382865,0 6.107422,-2.722604 6.107422,-6.105469 0,-3.382865 -2.724557,-6.107422 -6.107422,-6.107422 z m 0,1.34961 a 2.6565001,2.6563313 0 0 1 2.65625,2.65625 2.6565001,2.6563313 0 0 1 -2.65625,2.65625 2.6565001,2.6563313 0 0 1 -2.65625,-2.65625 2.6565001,2.6563313 0 0 1 2.65625,-2.65625 z m 45.2773436,1.888672 a 2.8690231,2.8689077 0 0 1 2.869141,2.86914 2.8690231,2.8689077 0 0 1 -2.869141,2.867188 2.8690231,2.8689077 0 0 1 -2.869141,-2.867188 2.8690231,2.8689077 0 0 1 2.869141,-2.86914 z"
+   transform="matrix(0.80000512,0,0,-0.80000512,265.97741,439.04001)" />
+
+
+
+
+
+</g>
+  </g>
+</svg>

@@ -119,6 +119,11 @@ my @bottom  = (0,0,0,0,0,0,0,0,0,0);
 @pinline  = ( 0,        1,       0,    0,   0)     if($conf->{country} eq 'AT');
 @bottom   = ( 0,        0,       0,    1,   0)     if($conf->{country} eq 'AT');
 
+@destorder = ('ref','symbol','dest','country')     if($conf->{country} eq 'CH');
+@order    = ('symbol','ref','to','dest','country') if($conf->{country} eq 'CH');
+@pinline  = ( 1,       1,    0,   0,     1)        if($conf->{country} eq 'CH');
+@bottom   = ( 1,       0,    0,   0,     0)        if($conf->{country} eq 'CH');
+
 @order    = ('country','symbol','ref','dest','to') if($conf->{country} eq 'PT');
 @pinline  = ( 0,        0,   0,     0,       0)    if($conf->{country} eq 'PT');
 @bottom   = ( 0,        0,   0,     0,       0)    if($conf->{country} eq 'PT');
@@ -868,6 +873,15 @@ sub makeRef {
     $text =~ s/\s//g;
     }        
 
+  if($conf->{country} eq 'CH') {
+    $tcol = 'black';
+    $bcol = 'white';
+    if ($text =~ /^\s*A[\d]+[\s]*/) { $tcol = 'white'; $bcol = 'CH:firebrick';}
+    if ($text =~ /^\s*E\s*/)        { $tcol = 'white'; $bcol = 'CH:green';}
+    if ($text =~ /^\s*[\d]+/)       { $tcol = 'white'; $bcol = 'CH:blue';}
+    $text =~ s/\s//g;
+    }
+
   if($conf->{country} eq 'FR') {
     if ($text =~ /^\s*[AN][\s\d]+/)  { $tcol = 'white'; $bcol = 'FR:red';}
     if ($text =~ /^\s*[EF][\s\d]+/)  { $tcol = 'white'; $bcol = 'FR:green';}
@@ -1071,8 +1085,9 @@ sub makeArrows {
       $conf->{$d}{arrows}[$l] = \@deg;
       if ($conf->{$d}{multilanes}[$l]){
         while ($conf->{$d}{multilanes}[$l] >= scalar @deg) {
-          if ($conf->{country} eq 'FR') {push(@deg,90);}
-          else                          {push(@deg,270);}
+          if ($conf->{country} eq 'FR' ||
+            $conf->{country} eq 'CH') {push(@deg,90);}
+          else                        {push(@deg,270);}
           }
         }
       if(scalar @deg > 1) {$multiple = 1;}
@@ -1111,7 +1126,7 @@ sub makeArrows {
 sub calcArrows {
   my @deg;
 
-  if ($conf->{country} eq 'FR') {
+  if ($conf->{country} eq 'FR' || $conf->{country} eq 'CH') {
     foreach my $arrow (@_) {
       if    ($arrow =~ /sharp_left/)     {push(@deg,180);}
       elsif ($arrow =~ /(^|;|\s)left/)   {push(@deg,180);}
@@ -1221,6 +1236,23 @@ sub getBackground {
         else {
           $col = 'white'   if $part eq 'back';
           $col = 'AT:blue' if $part eq 'front';
+          }
+        }
+#Main CH
+      if ($conf->{country} eq 'CH') {
+        if (($tags->{'destination:ref'} && $tags->{'destination:ref'}[0] =~ /^A[\d]+/) || 
+            ($tags->{'ref'} && $tags->{'ref'}[0] =~ /^A[\d]+/) ||
+            ($store->{$d}[0]{'highway'}[0] =~ /^(motorway|trunk)/)) {
+          $col = 'CH:green' if $part eq 'back';
+          $col = 'white'    if $part eq 'front';
+          }
+        elsif (($store->{$d}[0]{'highway'}[0] =~ /^(primary|secondary)/)) {
+          $col = 'CH:blue'  if $part eq 'back';
+          $col = 'white'    if $part eq 'front';
+          }
+        else {
+          $col = 'white'    if $part eq 'back';
+          $col = 'black'    if $part eq 'front';
           }
         }
 #Main PT    
@@ -1357,6 +1389,14 @@ sub getBackground {
           $col = 'white'   if $part eq 'front';
           }
         }  
+#Entry CH
+      if ($conf->{country} eq 'CH' && $type eq ':to') {
+        if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A[\d]+/)
+            || ($tags->{'destination:symbol:to'} && $tags->{'destination:symbol:to'}[$i] eq 'motorway')) {
+          $col = 'CH:green' if $part eq 'back';
+          $col = 'white'    if $part eq 'front';
+          }
+        }
 #Entry FR
       if ($conf->{country} eq 'FR' && $type eq ':to') {
         if (($tags->{'destination:ref:to'} && $tags->{'destination:ref:to'}[$i] =~ /^A/)
