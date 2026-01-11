@@ -102,6 +102,7 @@
 #fair
 #bridge
 
+
 "de:242-1" => "../../destinations/code/symbols/DE_242-1.svg",
 "de:244-1" => "../../destinations/code/symbols/DE_244-1.svg",
 "de:245" => "../../destinations/code/symbols/DE_245.svg",
@@ -123,8 +124,8 @@
 "de:261" => "../../destinations/code/symbols/DE_261.svg",
 "de:262" => "../../destinations/code/symbols/DE_262-5.5.svg",
 "de:263" => "../../destinations/code/symbols/DE_263-8.svg",
-"de:264" => "../../destinations/code/symbols/DE_264-2.svg",
 "de:264" => "../../destinations/code/symbols/DE_264-2.3.svg",
+"de:264" => "../../destinations/code/symbols/DE_264-2.svg",
 "de:265" => "../../destinations/code/symbols/DE_265-3.8.svg",
 "de:266" => "../../destinations/code/symbols/DE_266-10.svg",
 "de:267" => "../../destinations/code/symbols/DE_267.svg",
@@ -164,3 +165,10 @@
 "de:1042-38" => "../../destinations/code/symbols/DE_1042-38.svg",
 "de:1042-51" => "../../destinations/code/symbols/DE_1042-51.svg",
 "de:1042-52" => "../../destinations/code/symbols/DE_1042-52.svg",
+"de:1049-13" => "../../destinations/code/symbols/DE_1049-13.svg",
+"de:1052-30" => "../../destinations/code/symbols/DE_1052-30.svg",
+"de:1052-31" => "../../destinations/code/symbols/DE_1052-31.svg",
+"de:1053-33" => "../../destinations/code/symbols/DE_1053-33.svg",
+"de:1053-37" => "../../destinations/code/symbols/DE_1053-37.svg",
+"de:1060-32" => "../../destinations/code/symbols/DE_1060-32.svg",
+"de:1060-33" => "../../destinations/code/symbols/DE_1060-33.svg",
